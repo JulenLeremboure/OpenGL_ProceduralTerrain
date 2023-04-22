@@ -12,7 +12,7 @@ class Triangle
     using vertex_type = vertex_struct_texture_3D<T>;
 
 public:
-    Triangle(const vertex_type& pt1, const vertex_type& pt2, const vertex_type& pt3) : m_vao(0), m_vbo(0), m_vertices({ pt1, pt2, pt3 }), m_texture("moche2.bmp")
+    Triangle(const vertex_type& pt1, const vertex_type& pt2, const vertex_type& pt3) : m_vao(0), m_vbo(0), m_vertices({ pt1, pt2, pt3 }), m_texture("jgfgyuf")
     {
         load();
     }
@@ -77,7 +77,7 @@ public:
 
          model(2, 2) = 1.0f;*/
 
-        //Rotation sur l'axe Y
+         //Rotation sur l'axe Y
         model(0, 0) = std::cos(m_angle);
         model(0, 2) = std::sin(m_angle);
         model(2, 0) = -std::sin(m_angle);

@@ -10,14 +10,15 @@ file(GLOB_RECURSE src_files
         "source/*.h"
         "source/*.cpp"
         "source/*.frag"
-        "source/*.vert")
+        "source/*.vert"
+        "source/*.bmp")
 
 find_package(SFML COMPONENTS system window graphics network CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
 
 add_executable(${EXECUTABLE_TARGET_NAME}
-    "source/main.cpp" "source/Shaders/Shader.cpp")
+     "source/Shaders/Shader.cpp" "source/main.cpp")
 
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE GLEW::GLEW)

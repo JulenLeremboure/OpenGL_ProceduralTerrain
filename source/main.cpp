@@ -11,12 +11,12 @@
 int main()
 {
     // set version of opengl to 4.6
-	const sf::ContextSettings context_settings(24, 8, 4, 4, 6);
-    // crÃ©e la fenÃªtre
+    const sf::ContextSettings context_settings(24, 8, 4, 4, 6);
+    // crée la fenêtre
     sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, context_settings);
     window.setVerticalSyncEnabled(true);
 
-    // activation de la fenÃªtre
+    // activation de la fenêtre
     window.setActive(true);
 
     // fucking lines of hell
@@ -24,7 +24,7 @@ int main()
     if (glewInit())
         throw std::runtime_error("Error init glew");
 
-    // chargement des ressources, initialisation des Ã©tats OpenGL, ...
+    // chargement des ressources, initialisation des états OpenGL, ...
     using Point2f = Point2d<float>;
     using Point3f = Point3d<float>;
     using Trianglef = Triangle<float>;
@@ -35,10 +35,10 @@ int main()
     vertex_struct_texture_3D<float> p2{ Point3f { 0.9f, 0.9f, 0.f }, Point2f { 1.0f, -1.0f } };
     Trianglef triangle(p0, p1, p2);
 
-    Cubef cube {};
+    Cubef cube{};
 
     // Cam
-    Point3f cameraPos { 0.f, 0.f, 0.f };
+    Point3f cameraPos{ 0.f, 0.f, 0.f };
     float cameraAlpha = 0;
     float cameraBeta = 0;
 
@@ -50,7 +50,7 @@ int main()
     {
         float dt = dtClock.restart().asSeconds();
 
-        // gestion des Ã©vÃ¨nements
+        // gestion des évènements
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -61,12 +61,12 @@ int main()
             }
             else if (event.type == sf::Event::Resized)
             {
-                // on ajuste le viewport lorsque la fenÃªtre est redimensionnÃ©e
+                // on ajuste le viewport lorsque la fenêtre est redimensionnée
                 glViewport(0, 0, event.size.width, event.size.height);
             }
-            else if(event.type == sf::Event::KeyPressed)
+            else if (event.type == sf::Event::KeyPressed)
             {
-                switch(event.key.code)
+                switch (event.key.code)
                 {
                 case sf::Keyboard::Z:
                     cameraPos.z += 1 * dt;
@@ -76,7 +76,7 @@ int main()
                     break;
                 }
             }
-            else if(event.type == sf::Event::MouseMoved)
+            else if (event.type == sf::Event::MouseMoved)
             {
                 cameraAlpha += (event.mouseMove.x - 400) * -0.001f;
                 cameraBeta += (event.mouseMove.y - 300) * 0.001f;
@@ -110,7 +110,7 @@ int main()
         window.display();
     }
 
-    // libÃ©ration des ressources...
+    // libération des ressources...
 
     return 0;
 }

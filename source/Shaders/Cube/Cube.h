@@ -62,24 +62,24 @@ public:
         using vt = vertex_struct_cube<T>;
 
         std::array<vt, 3 * 12> points = {
-                // Face 1
-                vt{ P000, vr }, vt{ P001, vr }, vt{ P011, vr },
-                vt{ P000, vr }, vt{ P011, vr }, vt{ P010, vr },
-                // Face 2
-                vt{ P100, vg }, vt{ P101, vg }, vt{ P111, vg },
-                vt{ P100, vg }, vt{ P111, vg }, vt{ P110, vg },
-                // Face 3
-                vt{ P000, vb }, vt{ P001, vb }, vt{ P101, vb },
-                vt{ P000, vb }, vt{ P101, vb }, vt{ P100, vb },
-                // Face 4
-                vt{ P010, vb }, vt{ P011, vb }, vt{ P111, vb },
-                vt{ P010, vb }, vt{ P111, vb }, vt{ P110, vb },
-                // Face 5
-                vt{ P000, vb }, vt{ P010, vb }, vt{ P110, vb },
-                vt{ P000, vb }, vt{ P110, vb }, vt{ P100, vb },
-                // Face 6
-                vt{ P001, ag }, vt{ P011, ag }, vt{ P111, ag },
-                vt{ P001, ag }, vt{ P111, ag }, vt{ P101, ag },
+            // Face 1
+            vt{ P000, vr }, vt{ P001, vr }, vt{ P011, vr },
+            vt{ P000, vr }, vt{ P011, vr }, vt{ P010, vr },
+            // Face 2
+            vt{ P100, vg }, vt{ P101, vg }, vt{ P111, vg },
+            vt{ P100, vg }, vt{ P111, vg }, vt{ P110, vg },
+            // Face 3
+            vt{ P000, vb }, vt{ P001, vb }, vt{ P101, vb },
+            vt{ P000, vb }, vt{ P101, vb }, vt{ P100, vb },
+            // Face 4
+            vt{ P010, vb }, vt{ P011, vb }, vt{ P111, vb },
+            vt{ P010, vb }, vt{ P111, vb }, vt{ P110, vb },
+            // Face 5
+            vt{ P000, vb }, vt{ P010, vb }, vt{ P110, vb },
+            vt{ P000, vb }, vt{ P110, vb }, vt{ P100, vb },
+            // Face 6
+            vt{ P001, ag }, vt{ P011, ag }, vt{ P111, ag },
+            vt{ P001, ag }, vt{ P111, ag }, vt{ P101, ag },
         };
 
         m_nVertices = points.size();

@@ -6,8 +6,8 @@
 template<typename T>
 struct Point2d
 {
-    Point2d(const T x = 0, const T y = 0): x(x), y(y) {}
-    Point2d(const Point2d& pt): x(pt.x), y(pt.y) {}
+    Point2d(const T x = 0, const T y = 0) : x(x), y(y) {}
+    Point2d(const Point2d& pt) : x(pt.x), y(pt.y) {}
 
     T x;
     T y;
@@ -16,8 +16,8 @@ struct Point2d
 template<typename T>
 struct Point3d
 {
-    Point3d(const T x = 0, const T y = 0, const T z = 0): x(x), y(y), z(z) {}
-    Point3d(const Point3d& pt): x(pt.x), y(pt.y), z(pt.z) {}
+    Point3d(const T x = 0, const T y = 0, const T z = 0) : x(x), y(y), z(z) {}
+    Point3d(const Point3d& pt) : x(pt.x), y(pt.y), z(pt.z) {}
 
     T x;
     T y;
@@ -27,7 +27,7 @@ struct Point3d
 template<typename T, size_t Size>
 struct Mat2D
 {
-    Mat2D() { for(int i = 0; i < Size * Size ; ++i) m_data[i] = 0; }
+    Mat2D() { for (int i = 0; i < Size * Size; ++i) m_data[i] = 0; }
 
     T& operator() (const int i, const int j) { return m_data[j * Size + i]; }
     const T& operator() (const int i, const int j) const { return m_data[j * Size + i]; }
@@ -55,7 +55,7 @@ Mat2D<T, Size> operator*(const Mat2D<T, Size>& lhs, const Mat2D<T, Size>& rhs)
 template<typename Type>
 struct Mat4
 {
-    Mat4() { for(int i = 0; i < 16 ; ++i) m_data[i] = 0; }
+    Mat4() { for (int i = 0; i < 16; ++i) m_data[i] = 0; }
 
     Type& operator() (const int i, const int j) { return m_data[j * 4 + i]; }
     const Type& operator() (const int i, const int j) const { return m_data[j * 4 + i]; }
