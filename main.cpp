@@ -2,6 +2,6 @@
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Hello World ! I'm a template project for simple usage of vcpkg with cmake !" << std::endl;
+    std::cout << "Wow look at this insane procedural c++ opengl terrain subscribe for more" << std::endl;
     return 0;
 }

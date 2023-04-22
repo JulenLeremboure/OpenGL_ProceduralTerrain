@@ -1,6 +1,9 @@
 {
-  "name": "cmake-vcpkg-template",
+  "name": "opengl-insane-procedural-terrain",
   "version": "0.1.0",
   "builtin-baseline": "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98",
-  "dependencies": []
+  "dependencies": [
+    "imgui",
+    "glew"
+  ]
 }
