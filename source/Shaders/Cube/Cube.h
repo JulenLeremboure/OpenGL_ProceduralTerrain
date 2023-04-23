@@ -87,8 +87,8 @@ public:
         glBufferData(GL_ARRAY_BUFFER, sizeof(points), points.data(), GL_STATIC_DRAW);
 
         ShaderInfo shader[] = {
-                { GL_VERTEX_SHADER, "cube.vert" },
-                { GL_FRAGMENT_SHADER, "cube.frag" },
+                { GL_VERTEX_SHADER, "Assets/cube.vert" },
+                { GL_FRAGMENT_SHADER, "Assets/cube.frag" },
                 { GL_NONE, nullptr }
         };
 
