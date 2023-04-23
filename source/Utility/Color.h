@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Resources/Matrix.h"
+#include "Utility/Matrix.h"
 
 template<typename T>
 struct Color

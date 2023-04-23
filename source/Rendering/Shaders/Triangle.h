@@ -2,9 +2,9 @@
 
 #include <valarray>
 
-#include "Resources/Matrix.h"
-#include "Shaders/Shader.h"
-#include "Shaders/Texture.h"
+#include "Utility/Matrix.h"
+#include "Rendering/Shader.h"
+#include "Rendering/Texture.h"
 
 template<typename T>
 class Triangle
@@ -12,7 +12,7 @@ class Triangle
     using vertex_type = vertex_struct_texture_3D<T>;
 
 public:
-    Triangle(const vertex_type& pt1, const vertex_type& pt2, const vertex_type& pt3) : m_vao(0), m_vbo(0), m_vertices({ pt1, pt2, pt3 }), m_texture("Assets/moche2.bmp")
+    Triangle(const vertex_type& pt1, const vertex_type& pt2, const vertex_type& pt3) : m_vao(0), m_vbo(0), m_vertices({ pt1, pt2, pt3 }), m_texture("Resources/Images/moche2.bmp")
     {
         load();
     }
@@ -40,8 +40,8 @@ public:
         glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices.data(), GL_STATIC_DRAW);
 
         ShaderInfo shader[] = {
-                { GL_VERTEX_SHADER, "Assets/triangles.vert" },
-                { GL_FRAGMENT_SHADER, "Assets/triangles.frag" },
+                { GL_VERTEX_SHADER, "Resources/Shaders/Triangles/triangles.vert" },
+                { GL_FRAGMENT_SHADER, "Resources/Shaders/Triangles/triangles.frag" },
                 { GL_NONE, nullptr }
         };
 

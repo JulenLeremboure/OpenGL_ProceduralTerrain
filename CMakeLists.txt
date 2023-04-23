@@ -6,24 +6,21 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(EXECUTABLE_TARGET_NAME opengl-insane-procedural-terrain)
 
-file(GLOB_RECURSE src_files
-        "source/*.h")
-
-configure_file(source/Shaders/Triangles/triangles.frag ${CMAKE_CURRENT_BINARY_DIR}/Assets/triangles.frag COPYONLY)
-configure_file(source/Shaders/Triangles/triangles.vert ${CMAKE_CURRENT_BINARY_DIR}/Assets/triangles.vert COPYONLY)
-
-configure_file(source/Shaders/Cube/cube.frag ${CMAKE_CURRENT_BINARY_DIR}/Assets/cube.frag COPYONLY)
-configure_file(source/Shaders/Cube/cube.vert ${CMAKE_CURRENT_BINARY_DIR}/Assets/cube.vert COPYONLY)
-
-configure_file(source/Resources/Images/moche2.bmp ${CMAKE_CURRENT_BINARY_DIR}/Assets/moche2.bmp COPYONLY)
-
 find_package(SFML COMPONENTS system window graphics network CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
 
+file(GLOB_RECURSE src_files "source/*.h")
+
+# Put all CPP files here.
 add_executable(${EXECUTABLE_TARGET_NAME}
     "source/main.cpp"
-    "source/Shaders/Shader.cpp")
+    "source/Rendering/Shader.cpp")
+
+# All Resources/ files are copied into out/ after building program
+add_custom_command(TARGET ${EXECUTABLE_TARGET_NAME} PRE_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory
+                    ${CMAKE_SOURCE_DIR}/source/Resources/ $<TARGET_FILE_DIR:${EXECUTABLE_TARGET_NAME}>/Resources)
 
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE GLEW::GLEW)

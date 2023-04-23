@@ -2,8 +2,8 @@
 
 #include <gl/glew.h>
 
-#include "Shaders/Shader.h"
-#include "Resources/Color.h"
+#include "Rendering/Shader.h"
+#include "Utility/Color.h"
 
 template<typename T>
 struct vertex_struct_cube
@@ -87,8 +87,8 @@ public:
         glBufferData(GL_ARRAY_BUFFER, sizeof(points), points.data(), GL_STATIC_DRAW);
 
         ShaderInfo shader[] = {
-                { GL_VERTEX_SHADER, "Assets/cube.vert" },
-                { GL_FRAGMENT_SHADER, "Assets/cube.frag" },
+                { GL_VERTEX_SHADER, "Resources/Shaders/Cube/cube.vert" },
+                { GL_FRAGMENT_SHADER, "Resources/Shaders/Cube/cube.frag" },
                 { GL_NONE, nullptr }
         };
 

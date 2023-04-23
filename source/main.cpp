@@ -1,10 +1,10 @@
 #include <gl/glew.h>
 
-#include "Resources/Matrix.h"
-#include "Shaders/Texture.h"
-#include "Shaders/Triangles/Triangle.h"
-#include "Shaders/Cube/Cube.h"
-#include "Shaders/Shader.h"
+#include "Utility/Matrix.h"
+#include "Rendering/Texture.h"
+#include "Rendering/Shaders/Triangle.h"
+#include "Rendering/Shaders/Cube.h"
+#include "Rendering/Shader.h"
 
 #include "SFML/Graphics.hpp"
 
