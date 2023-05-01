@@ -1,110 +1,80 @@
 #include <gl/glew.h>
 
+#include "SFML/Graphics.hpp"
+
 #include "Utility/Matrix.h"
 #include "Rendering/Texture.h"
-#include "Rendering/Shaders/Triangle.h"
-#include "Rendering/Shaders/Cube.h"
-#include "Rendering/Shader.h"
 
-#include "SFML/Graphics.hpp"
+#include "SceneObjects/Camera/Camera.h"
+#include "Utility/Maths.h"
+#include "ProceduralGeneration/HeightMap/HeightMap.h"
+
+constexpr float WINDOW_BASE_WIDTH = 800.f;
+constexpr float WINDOW_BASE_HEIGHT = 600.f;
+
+constexpr float WINDOW_ASPECT_RATIO = WINDOW_BASE_WIDTH / WINDOW_BASE_HEIGHT;
 
 int main()
 {
-    // set version of opengl to 4.6
-    const sf::ContextSettings context_settings(24, 8, 4, 4, 6);
-    // crée la fenêtre
-    sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, context_settings);
-    window.setVerticalSyncEnabled(true);
+    // Set version of opengl to 4.6
+    const sf::ContextSettings contextSettings(24, 8, 4, 4, 6);
 
-    // activation de la fenêtre
+    sf::Window window(sf::VideoMode(WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT), "OpenGL", sf::Style::Default, contextSettings);
+    window.setVerticalSyncEnabled(true);
     window.setActive(true);
 
-    // fucking lines of hell
     glewExperimental = GL_TRUE;
     if (glewInit())
         throw std::runtime_error("Error init glew");
 
-    // chargement des ressources, initialisation des états OpenGL, ...
-    using Point2f = Point2d<float>;
-    using Point3f = Point3d<float>;
-    using Trianglef = Triangle<float>;
-    using Cubef = Cube<float>;
+    glClearColor(GameColors::sky.r, GameColors::sky.g, GameColors::sky.b, GameColors::sky.a);
 
-    vertex_struct_texture_3D<float> p0{ Point3f { -0.9f, -0.9f, 0.f }, Point2f { -1.0f, 1.0f } };
-    vertex_struct_texture_3D<float> p1{ Point3f { 0.9f, -0.9f, 0.f }, Point2f { 1.0f, 1.0f } };
-    vertex_struct_texture_3D<float> p2{ Point3f { 0.9f, 0.9f, 0.f }, Point2f { 1.0f, -1.0f } };
-    Trianglef triangle(p0, p1, p2);
-
-    Cubef cube{};
-
-    // Cam
-    Point3f cameraPos{ 0.f, 0.f, 0.f };
-    float cameraAlpha = 0;
-    float cameraBeta = 0;
-
+    // ---- INIT RESOURCES
+    Camera camera;
+    HeightMap heightMap;
     sf::Clock dtClock;
 
-    // la boucle principale
-    bool running = true;
-    while (running)
+    // ---- GAME LOOP
+    bool isProgramRunning = true;
+
+    while (isProgramRunning)
     {
-        float dt = dtClock.restart().asSeconds();
+        float deltaTime = dtClock.restart().asSeconds();
 
-        // gestion des évènements
-        sf::Event event;
-        while (window.pollEvent(event))
+        // ---- EVENTS
+        sf::Event sfmlEvent;
+        while (window.pollEvent(sfmlEvent))
         {
-            if (event.type == sf::Event::Closed)
+            if (sfmlEvent.type == sf::Event::Closed)
             {
-                // on stoppe le programme
-                running = false;
+                isProgramRunning = false;
             }
-            else if (event.type == sf::Event::Resized)
+            else if (sfmlEvent.type == sf::Event::Resized)
             {
-                // on ajuste le viewport lorsque la fenêtre est redimensionnée
-                glViewport(0, 0, event.size.width, event.size.height);
+                glViewport(0, 0, sfmlEvent.size.width, sfmlEvent.size.height);
             }
-            else if (event.type == sf::Event::KeyPressed)
+            else if (sfmlEvent.type == sf::Event::MouseMoved)
             {
-                switch (event.key.code)
-                {
-                case sf::Keyboard::Z:
-                    cameraPos.z += 1 * dt;
-                    break;
-                case sf::Keyboard::S:
-                    cameraPos.z -= 1 * dt;
-                    break;
-                }
+                sf::Mouse::setPosition(sf::Vector2i(WINDOW_BASE_WIDTH / 2.f, WINDOW_BASE_HEIGHT / 2.f), window);
             }
-            else if (event.type == sf::Event::MouseMoved)
-            {
-                cameraAlpha += (event.mouseMove.x - 400) * -0.001f;
-                cameraBeta += (event.mouseMove.y - 300) * 0.001f;
 
-                sf::Mouse::setPosition(sf::Vector2i(400, 300), window);
-            }
+            camera.moveCameraForInput(sfmlEvent, deltaTime);
+            camera.rotateCameraForInput(sfmlEvent, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
         }
+
+        // ---- DRAWINGS
 
         // effacement les tampons de couleur/profondeur
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //Mat4<float> v = Mat4<float>::identity();
-        Mat4<float> v = Mat4<float>::rotationX(-cameraBeta) * Mat4<float>::rotationY(-cameraAlpha) * Mat4<float>::translation(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+        Mat4<float> matView = Mat4<float>::rotationX(-camera.m_cameraBeta) * 
+						Mat4<float>::rotationY(-camera.m_cameraAlpha) *
+						Mat4<float>::translation(-camera.m_cameraPos.x, -camera.m_cameraPos.y, -camera.m_cameraPos.z);
+        const auto matProj = Mat4<float>::projection(WINDOW_ASPECT_RATIO, CAMERA_FOV, CAMERA_FAR_PLANE, CAMERA_NEAR_PLANE);
+        Mat4<float> matViewByProj = matProj * matView;
 
-        float aspect = 800.f / 600.f;
-        float fov = 45.0f / 180.0f * 3.14159265358979323846f;
-        float n = 0.1f;
-        float f = 100.0f;
-        // Matrice de projection
-        auto p = Mat4<float>::projection(aspect, fov, f, n);
+        heightMap.render(matViewByProj);
 
-        Mat4<float> vp = p * v;
-
-        //triangle.update(dt);
-        //triangle.render(vp);
-
-        cube.update(dt);
-        cube.render(vp);
         glFlush();
 
         window.display();
