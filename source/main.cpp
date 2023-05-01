@@ -32,15 +32,6 @@ int main()
     glClearColor(0.69f, 0.76f, 1.f, 1.f);
 
     // ---- INIT RESOURCES
-    using Trianglef = Triangle<float>;
-    using Cubef = Cube<float>;
-
-    vertex_struct_texture_3D<float> p0{ Point3Df { -0.9f, -0.9f, 0.f }, Point2Df { -1.0f, 1.0f } };
-    vertex_struct_texture_3D<float> p1{ Point3Df { 0.9f, -0.9f, 0.f }, Point2Df { 1.0f, 1.0f } };
-    vertex_struct_texture_3D<float> p2{ Point3Df { 0.9f, 0.9f, 0.f }, Point2Df { 1.0f, -1.0f } };
-    //Trianglef triangle(p0, p1, p2);
-    //Cubef cube{};
-
     Camera camera;
     HeighMap heighMap;
     sf::Clock dtClock;

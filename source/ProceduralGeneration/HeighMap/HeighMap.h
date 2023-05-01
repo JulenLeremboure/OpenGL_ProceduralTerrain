@@ -27,20 +27,17 @@ public:
 
 	void load()
 	{
-		constexpr float yScale = 64.0f / 256.0f;
-		constexpr float yShift = 16.0f;  // apply a scale+shift to the height data
-
 		for (unsigned int i = 0; i < MAP_HEIGHT; i++)
 		{
 			for (unsigned int j = 0; j < MAP_WIDTH; j++)
 			{
-				const float vertexHeight = std::sin(i) * 1.f;// +(j + MAP_WIDTH * i);// * nChannels;
+				const float vertexHeight = std::sin(i) * 1.f;
 
 				// vertex
 				vertex_colored newVtColored;
 				newVtColored.point = Point3Df(
 					-MAP_HEIGHT / 2.0f + i,
-					vertexHeight,// * yScale - yShift,
+					vertexHeight,
 					-MAP_WIDTH / 2.0f + j);
 
 				newVtColored.color = Color<float>(.23f, 0.51f, 0.28f, 1.f);
@@ -51,11 +48,11 @@ public:
 
 		// index generation
 		std::vector<unsigned int> indices;
-		for (unsigned int i = 0; i < MAP_HEIGHT - 1; i++)       // for each row a.k.a. each strip
+		for (unsigned int i = 0; i < MAP_HEIGHT - 1; i++) // for each row a.k.a. each strip
 		{
-			for (unsigned int j = 0; j < MAP_WIDTH; j++)      // for each column
+			for (unsigned int j = 0; j < MAP_WIDTH; j++) // for each column
 			{
-				for (unsigned int k = 0; k < 2; k++)      // for each side of the strip
+				for (unsigned int k = 0; k < 2; k++) // for each side of the strip
 				{
 					indices.push_back(j + MAP_WIDTH * (i + k));
 				}
@@ -69,21 +66,21 @@ public:
 		glGenBuffers(1, &m_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER,
-			m_points.size() * sizeof(vertex_colored),       // size of vertices buffer
-			&m_points[0],                          // pointer to first element
+			m_points.size() * sizeof(vertex_colored),	// size of vertices buffer
+			&m_points[0],								// pointer to first element
 			GL_STATIC_DRAW);
 
 		glGenBuffers(1, &m_ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			indices.size() * sizeof(unsigned int), // size of indices buffer
-			&indices[0],                           // pointer to first element
+			indices.size() * sizeof(unsigned int),	// size of indices buffer
+			&indices[0],							// pointer to first element
 			GL_STATIC_DRAW);
 
 		ShaderInfo shader[] = {
-		{ GL_VERTEX_SHADER, "Resources/Shaders/Cube/cube.vert" },
-		{ GL_FRAGMENT_SHADER, "Resources/Shaders/Cube/cube.frag" },
-		{ GL_NONE, nullptr }
+			{ GL_VERTEX_SHADER, "Resources/Shaders/Cube/cube.vert" },
+			{ GL_FRAGMENT_SHADER, "Resources/Shaders/Cube/cube.frag" },
+			{ GL_NONE, nullptr }
 		};
 
 		const auto program = Shader::loadShaders(shader);
@@ -99,6 +96,7 @@ public:
 			sizeof(vertex_colored), // Stride
 			static_cast<void*>(0)); // Pointer
 		glEnableVertexAttribArray(0);
+
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex_colored), (char*)(0) + sizeof(vertex_colored::point));
 		glEnableVertexAttribArray(1);
 
@@ -121,7 +119,7 @@ public:
 					* strip)); // offset to starting index
 		}
 
-		auto mvpLocation = glGetUniformLocation(m_program, "model");
+		const auto mvpLocation = glGetUniformLocation(m_program, "model");
 		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, viewProjection.data());
 	}
 
@@ -131,8 +129,5 @@ private:
 	GLuint m_ebo{ 0 };
 	GLuint m_program{ 0 };
 
-	GLsizei m_numberVertices;
-
-	//std::array<vertex_color, static_cast<size_t>(MAP_HEIGHT* MAP_WIDTH)> m_points;
 	std::vector<vertex_colored> m_points;
 };
