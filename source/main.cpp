@@ -9,6 +9,7 @@
 
 #include "SceneObjects/Camera/Camera.h"
 #include "Utility/Maths.h"
+#include "ProceduralGeneration/HeighMap/HeighMap.h"
 
 constexpr float WINDOW_BASE_WIDTH = 800.f;
 constexpr float WINDOW_BASE_HEIGHT = 600.f;
@@ -28,6 +29,8 @@ int main()
     if (glewInit())
         throw std::runtime_error("Error init glew");
 
+    glClearColor(0.69f, 0.76f, 1.f, 1.f);
+
     // ---- INIT RESOURCES
     using Trianglef = Triangle<float>;
     using Cubef = Cube<float>;
@@ -39,6 +42,7 @@ int main()
     Cubef cube{};
 
     Camera camera;
+    HeighMap heighMap;
     sf::Clock dtClock;
 
     // ---- GAME LOOP
@@ -62,7 +66,7 @@ int main()
             }
             else if (sfmlEvent.type == sf::Event::MouseMoved)
             {
-                sf::Mouse::setPosition(sf::Vector2i(400, 300), window);
+                sf::Mouse::setPosition(sf::Vector2i(WINDOW_BASE_WIDTH / 2, WINDOW_BASE_HEIGHT / 2), window);
             }
 
             camera.moveCameraForInput(sfmlEvent, deltaTime);
@@ -85,12 +89,16 @@ int main()
         cube.update(deltaTime);
         cube.render(vp);
 
+        heighMap.render(vp);
+
         glFlush();
 
         window.display();
     }
 
     // libération des ressources...
+
+    
 
     return 0;
 }

@@ -17,6 +17,11 @@ struct Color
 template<typename T>
 struct vertex_struct_color
 {
-    Point2D<T> p;
-    Color<T> c;
+    vertex_struct_color(const Point3D<T>& p = Point3D<T>(), const Color<T>& c = Color<T>())
+        : point(p)
+        , color(c)
+    {}
+
+    Point3D<T> point;
+    Color<T> color;
 };

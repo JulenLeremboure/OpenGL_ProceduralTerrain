@@ -6,7 +6,7 @@
 constexpr float CAMERA_FOV = 45.0f / 180.0f * PI;
 constexpr float CAMERA_NEAR_PLANE = 0.1f;
 constexpr float CAMERA_FAR_PLANE = 100.0f;
-constexpr float CAMERA_SPEED = 10.f;
+constexpr float CAMERA_SPEED = 30.f;
 
 class Camera
 {
