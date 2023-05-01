@@ -5,19 +5,20 @@
 #include <stdexcept>
 
 #include "SFML/Graphics/Image.hpp"
+#include "Utility/Maths.h"
 
 template<typename T>
 struct vertex_struct_texture
 {
-    Point2d<T> p;
-    Point2d<T> t;
+    Point2D<T> p;
+    Point2D<T> t;
 };
 
 template<typename T>
 struct vertex_struct_texture_3D
 {
-    Point3d<T> p;
-    Point2d<T> t;
+    Point3D<T> p;
+    Point2D<T> t;
 };
 
 struct Texture

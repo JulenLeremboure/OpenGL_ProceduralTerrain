@@ -15,7 +15,8 @@ file(GLOB_RECURSE src_files "source/*.h")
 # Put all CPP files here.
 add_executable(${EXECUTABLE_TARGET_NAME}
     "source/main.cpp"
-    "source/Rendering/Shader.cpp")
+    "source/Rendering/Shader.cpp"
+    "source/SceneObjects/Camera/Camera.cpp")
 
 # All Resources/ files are copied into out/ after building program
 add_custom_command(TARGET ${EXECUTABLE_TARGET_NAME} PRE_BUILD

@@ -17,6 +17,6 @@ struct Color
 template<typename T>
 struct vertex_struct_color
 {
-    Point2d<T> p;
+    Point2D<T> p;
     Color<T> c;
 };

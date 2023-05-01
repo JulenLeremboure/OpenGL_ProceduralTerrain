@@ -3,26 +3,7 @@
 #include <complex>
 #include <array>
 
-template<typename T>
-struct Point2d
-{
-    Point2d(const T x = 0, const T y = 0) : x(x), y(y) {}
-    Point2d(const Point2d& pt) : x(pt.x), y(pt.y) {}
-
-    T x;
-    T y;
-};
-
-template<typename T>
-struct Point3d
-{
-    Point3d(const T x = 0, const T y = 0, const T z = 0) : x(x), y(y), z(z) {}
-    Point3d(const Point3d& pt) : x(pt.x), y(pt.y), z(pt.z) {}
-
-    T x;
-    T y;
-    T z;
-};
+#include "Utility/Maths.h"
 
 template<typename T, size_t Size>
 struct Mat2D
@@ -96,7 +77,7 @@ struct Mat4
         return result;
     }
 
-    static Mat4<Type> translation(const Point3d<Type>& pt)
+    static Mat4<Type> translation(const Point3D<Type>& pt)
     {
         return translation(pt.x, pt.y, pt.z);
     }

@@ -8,12 +8,12 @@
 template<typename T>
 struct vertex_struct_cube
 {
-    vertex_struct_cube(const Point3d<T>& p, const Color<T>& c)
+    vertex_struct_cube(const Point3D<T>& p, const Color<T>& c)
         : p(p)
         , c(c)
     {}
 
-    Point3d<T> p;
+    Point3D<T> p;
     Color<T> c;
 };
 
@@ -47,14 +47,14 @@ public:
 
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-        Point3d<T> P000 = { -1, -1, -1 };
-        Point3d<T> P001 = { -1, -1, +1 };
-        Point3d<T> P010 = { -1, +1, -1 };
-        Point3d<T> P011 = { -1, +1, +1 };
-        Point3d<T> P100 = { +1, -1, -1 };
-        Point3d<T> P101 = { +1, -1, +1 };
-        Point3d<T> P110 = { +1, +1, -1 };
-        Point3d<T> P111 = { +1, +1, +1 };
+        Point3D<T> P000 = { -1, -1, -1 };
+        Point3D<T> P001 = { -1, -1, +1 };
+        Point3D<T> P010 = { -1, +1, -1 };
+        Point3D<T> P011 = { -1, +1, +1 };
+        Point3D<T> P100 = { +1, -1, -1 };
+        Point3D<T> P101 = { +1, -1, +1 };
+        Point3D<T> P110 = { +1, +1, -1 };
+        Point3D<T> P111 = { +1, +1, +1 };
 
         Color<T> vr = { 1, 0, 0, 1 }; Color<T> vg = { 0, 1, 0, 1 }; Color<T> vb = { 0, 0, 1, 1 };
         Color<T> ar = { 0, 1, 1, 1 }; Color<T> ag = { 1, 0, 1, 1 }; Color<T> ab = { 1, 1, 0, 1 };
