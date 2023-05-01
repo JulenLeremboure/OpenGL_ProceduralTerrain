@@ -38,8 +38,8 @@ int main()
     vertex_struct_texture_3D<float> p0{ Point3Df { -0.9f, -0.9f, 0.f }, Point2Df { -1.0f, 1.0f } };
     vertex_struct_texture_3D<float> p1{ Point3Df { 0.9f, -0.9f, 0.f }, Point2Df { 1.0f, 1.0f } };
     vertex_struct_texture_3D<float> p2{ Point3Df { 0.9f, 0.9f, 0.f }, Point2Df { 1.0f, -1.0f } };
-    Trianglef triangle(p0, p1, p2);
-    Cubef cube{};
+    //Trianglef triangle(p0, p1, p2);
+    //Cubef cube{};
 
     Camera camera;
     HeighMap heighMap;
@@ -87,7 +87,7 @@ int main()
         Mat4<float> vp = p * v;
 
         // cube.update(deltaTime);
-    	 //cube.render(vp);
+    	//cube.render(vp);
         heighMap.render(vp);
 
         glFlush();

@@ -1,7 +1,7 @@
 #pragma once
 
-constexpr int MAP_HEIGHT = 6;
-constexpr int MAP_WIDTH = 6;
+constexpr int MAP_HEIGHT = 100;
+constexpr int MAP_WIDTH = 100;
 
 constexpr int MIN_VERTEX_HEIGHT = 0;
 constexpr int MAX_VERTEX_HEIGHT = 100;
@@ -11,7 +11,7 @@ constexpr int NUM_VERTS_PER_STRIP = MAP_WIDTH * 2;
 
 class HeighMap
 {
-	using vertex_color = vertex_struct_color<float>;
+	using vertex_colored = vertex_struct_color<float>;
 
 public:
 	HeighMap()
@@ -27,24 +27,29 @@ public:
 
 	void load()
 	{
-		// ---- Map generation
-		const Color<float> vertexColor = { 1, 0, 1, 1 };
+		constexpr float yScale = 64.0f / 256.0f;
+		constexpr float yShift = 16.0f;  // apply a scale+shift to the height data
 
-		std::vector<float> vertices;
-		float yScale = 64.0f / 256.0f, yShift = 16.0f;  // apply a scale+shift to the height data
 		for (unsigned int i = 0; i < MAP_HEIGHT; i++)
 		{
 			for (unsigned int j = 0; j < MAP_WIDTH; j++)
 			{
-				double currentHeight = 0.001f * i + (j + MAP_WIDTH * i);// *nChannels;
+				const float vertexHeight = std::sin(i) * 1.f;// +(j + MAP_WIDTH * i);// * nChannels;
 
 				// vertex
-				vertices.push_back(-MAP_HEIGHT / 2.0f + i);					// v.x
-				vertices.push_back((int)currentHeight);// *yScale - yShift);  // v.y
-				vertices.push_back(-MAP_WIDTH / 2.0f + j );					// v.z
+				vertex_colored newVtColored;
+				newVtColored.point = Point3Df(
+					-MAP_HEIGHT / 2.0f + i,
+					vertexHeight,// * yScale - yShift,
+					-MAP_WIDTH / 2.0f + j);
+
+				newVtColored.color = Color<float>(.23f, 0.51f, 0.28f, 1.f);
+
+				m_points.emplace_back(newVtColored);
 			}
 		}
 
+		// index generation
 		std::vector<unsigned int> indices;
 		for (unsigned int i = 0; i < MAP_HEIGHT - 1; i++)       // for each row a.k.a. each strip
 		{
@@ -57,36 +62,16 @@ public:
 			}
 		}
 
-		for (int i = 0; i < MAP_HEIGHT; ++i)
-		{
-			for (int j = 0; j < MAP_WIDTH; ++j)
-			{
-				const float testReliefs = 0.01f;// *(i + j / (i + 1)); // Just making weird calculation to draw mountains
-				m_points[i + j].point = Point3Df(i, testReliefs, j);
-				m_points[i + j].color = vertexColor;
-			}
-		}
-
-		m_numberVertices = vertices.size();
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
-
+		// register VAO
 		glGenVertexArrays(1, &m_vao);
 		glBindVertexArray(m_vao);
 
 		glGenBuffers(1, &m_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER,
-			vertices.size() * sizeof(float),       // size of vertices buffer
-			&vertices[0],                          // pointer to first element
+			m_points.size() * sizeof(vertex_colored),       // size of vertices buffer
+			&m_points[0],                          // pointer to first element
 			GL_STATIC_DRAW);
-
-		//m_numberVertices = m_points.size();
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(m_points), m_points.data(), GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_color), 0); //Pour 3D
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex_color), (char*)(0) + sizeof(vertex_color::point));
-		glEnableVertexAttribArray(1);
 
 		glGenBuffers(1, &m_ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
@@ -95,6 +80,28 @@ public:
 			&indices[0],                           // pointer to first element
 			GL_STATIC_DRAW);
 
+		ShaderInfo shader[] = {
+		{ GL_VERTEX_SHADER, "Resources/Shaders/Cube/cube.vert" },
+		{ GL_FRAGMENT_SHADER, "Resources/Shaders/Cube/cube.frag" },
+		{ GL_NONE, nullptr }
+		};
+
+		const auto program = Shader::loadShaders(shader);
+		glUseProgram(program);
+		m_program = program;
+
+		// position attribute
+		glVertexAttribPointer(
+			0, // Index
+			3, // Size
+			GL_FLOAT, // Type
+			GL_FALSE, // normalized
+			sizeof(vertex_colored), // Stride
+			static_cast<void*>(0)); // Pointer
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex_colored), (char*)(0) + sizeof(vertex_colored::point));
+		glEnableVertexAttribArray(1);
+
 		glEnable(GL_DEPTH_TEST);
 	}
 
@@ -102,9 +109,6 @@ public:
 	{
 		// draw mesh
 		glBindVertexArray(m_vao);
-
-		//auto mvpLocation = glGetUniformLocation(m_program, "model");
-		//glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, viewProjection.data());
 
 		// render the mesh triangle strip by triangle strip - each row at a time
 		for (unsigned int strip = 0; strip < NUM_STRIPS; ++strip)
@@ -116,15 +120,19 @@ public:
 					* NUM_VERTS_PER_STRIP
 					* strip)); // offset to starting index
 		}
+
+		auto mvpLocation = glGetUniformLocation(m_program, "model");
+		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, viewProjection.data());
 	}
 
 private:
-	GLuint m_vao;
-	GLuint m_vbo;
-	GLuint m_ebo;
-	GLuint m_program;
+	GLuint m_vao { 0 };
+	GLuint m_vbo{ 0 };
+	GLuint m_ebo{ 0 };
+	GLuint m_program{ 0 };
 
 	GLsizei m_numberVertices;
 
-	std::array<vertex_color, static_cast<size_t>(MAP_HEIGHT* MAP_WIDTH)> m_points;
+	//std::array<vertex_color, static_cast<size_t>(MAP_HEIGHT* MAP_WIDTH)> m_points;
+	std::vector<vertex_colored> m_points;
 };
