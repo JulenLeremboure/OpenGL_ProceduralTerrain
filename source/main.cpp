@@ -4,12 +4,10 @@
 
 #include "Utility/Matrix.h"
 #include "Rendering/Texture.h"
-#include "Rendering/Shaders/Triangle.h"
-#include "Rendering/Shaders/Cube.h"
 
 #include "SceneObjects/Camera/Camera.h"
 #include "Utility/Maths.h"
-#include "ProceduralGeneration/HeighMap/HeightMap.h"
+#include "ProceduralGeneration/HeightMap/HeightMap.h"
 
 constexpr float WINDOW_BASE_WIDTH = 800.f;
 constexpr float WINDOW_BASE_HEIGHT = 600.f;
@@ -33,7 +31,7 @@ int main()
 
     // ---- INIT RESOURCES
     Camera camera;
-    HeighMap heightMap;
+    HeightMap heightMap;
     sf::Clock dtClock;
 
     // ---- GAME LOOP
@@ -57,7 +55,7 @@ int main()
             }
             else if (sfmlEvent.type == sf::Event::MouseMoved)
             {
-                sf::Mouse::setPosition(sf::Vector2i(WINDOW_BASE_WIDTH / 2, WINDOW_BASE_HEIGHT / 2), window);
+                sf::Mouse::setPosition(sf::Vector2i(WINDOW_BASE_WIDTH / 2.f, WINDOW_BASE_HEIGHT / 2.f), window);
             }
 
             camera.moveCameraForInput(sfmlEvent, deltaTime);
@@ -69,17 +67,13 @@ int main()
         // effacement les tampons de couleur/profondeur
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Mat4<float> v = Mat4<float>::rotationX(-camera.m_cameraBeta) * 
+        Mat4<float> matView = Mat4<float>::rotationX(-camera.m_cameraBeta) * 
 						Mat4<float>::rotationY(-camera.m_cameraAlpha) *
 						Mat4<float>::translation(-camera.m_cameraPos.x, -camera.m_cameraPos.y, -camera.m_cameraPos.z);
+        const auto matProj = Mat4<float>::projection(WINDOW_ASPECT_RATIO, CAMERA_FOV, CAMERA_FAR_PLANE, CAMERA_NEAR_PLANE);
+        Mat4<float> matViewByProj = matProj * matView;
 
-        auto p = Mat4<float>::projection(WINDOW_ASPECT_RATIO, CAMERA_FOV, CAMERA_FAR_PLANE, CAMERA_NEAR_PLANE);
-
-        Mat4<float> vp = p * v;
-
-        // cube.update(deltaTime);
-    	//cube.render(vp);
-        heightMap.render(vp);
+        heightMap.render(matViewByProj);
 
         glFlush();
 
@@ -87,8 +81,6 @@ int main()
     }
 
     // libération des ressources...
-
-    
 
     return 0;
 }

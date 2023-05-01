@@ -3,7 +3,7 @@
 #include <complex>
 #include <array>
 
-#include "Utility/Maths.h"
+#include "Maths.h"
 
 template<typename T, size_t Size>
 struct Mat2D
