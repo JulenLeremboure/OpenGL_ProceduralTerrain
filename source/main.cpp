@@ -86,9 +86,8 @@ int main()
 
         Mat4<float> vp = p * v;
 
-        cube.update(deltaTime);
-        cube.render(vp);
-
+        // cube.update(deltaTime);
+    	 //cube.render(vp);
         heighMap.render(vp);
 
         glFlush();
