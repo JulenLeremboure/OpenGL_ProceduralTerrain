@@ -4,10 +4,7 @@ constexpr int MAP_HEIGHT = 100;
 constexpr int MAP_WIDTH = 100;
 
 constexpr int MIN_VERTEX_HEIGHT = 0;
-constexpr int MAX_VERTEX_HEIGHT = 100;
-
-constexpr int NUM_STRIPS = MAP_HEIGHT - 1;
-constexpr int NUM_VERTS_PER_STRIP = MAP_WIDTH * 2;
+constexpr int MAX_VERTEX_HEIGHT = 20;
 
 class HeighMap
 {
@@ -27,20 +24,24 @@ public:
 
 	void load()
 	{
+		constexpr float TERRAIN_WAVE_AMPLITUDE = MAX_VERTEX_HEIGHT / 2.f;
+		constexpr float TERRAIN_WAVE_FREQUENCY = 1 / 8.f;
+		constexpr int MAP_POS_Y_OFFSET = -40;
+
 		for (unsigned int i = 0; i < MAP_HEIGHT; i++)
 		{
 			for (unsigned int j = 0; j < MAP_WIDTH; j++)
 			{
-				const float vertexHeight = std::sin(i) * 1.f;
+				const float vertexHeight = std::sin(i * TERRAIN_WAVE_FREQUENCY) * TERRAIN_WAVE_AMPLITUDE + TERRAIN_WAVE_AMPLITUDE;
 
-				// vertex
+				// new vertex
 				vertex_colored newVtColored;
 				newVtColored.point = Point3Df(
 					-MAP_HEIGHT / 2.0f + i,
-					vertexHeight,
+					vertexHeight + MAP_POS_Y_OFFSET,
 					-MAP_WIDTH / 2.0f + j);
 
-				newVtColored.color = Color<float>(.23f, 0.51f, 0.28f, 1.f);
+				newVtColored.color = getColorFromVertexHeight(vertexHeight);
 
 				m_points.emplace_back(newVtColored);
 			}
@@ -105,6 +106,9 @@ public:
 
 	void render(const Mat4<float> viewProjection)
 	{
+		constexpr int NUM_STRIPS = MAP_HEIGHT - 1;
+		constexpr int NUM_VERTS_PER_STRIP = MAP_WIDTH * 2;
+
 		// draw mesh
 		glBindVertexArray(m_vao);
 
@@ -121,6 +125,50 @@ public:
 
 		const auto mvpLocation = glGetUniformLocation(m_program, "model");
 		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, viewProjection.data());
+	}
+
+	static Color<float> getColorFromVertexHeight(float vertexHeight)
+	{
+		constexpr float ABYSSWATER_THRESHOLD	= 0.03f;
+		constexpr float DEEPWATER_THRESHOLD		= 0.08f;
+		constexpr float WATER_THRESHOLD			= 0.18f;
+		constexpr float CLAY_THRESHOLD			= 0.22f;
+		constexpr float SAND_THRESHOLD			= 0.3f;
+		constexpr float GRASS_THRESHOLD			= 0.6f;
+		constexpr float ROCK_THRESHOLD			= 0.75f;
+		constexpr float HARDROCK_THRESHOLD		= 0.85f;
+		constexpr float SNOW_THRESHOLD			= 0.95f;
+
+		vertexHeight = MathUtils::remapValue(vertexHeight, MIN_VERTEX_HEIGHT, MAX_VERTEX_HEIGHT, 0, 1);
+
+		if (vertexHeight < ABYSSWATER_THRESHOLD)
+			return GameColors::abyssWater;
+
+		if (vertexHeight < DEEPWATER_THRESHOLD)
+			return GameColors::deepwater;
+
+		if (vertexHeight < WATER_THRESHOLD)
+			return GameColors::water;
+
+		if (vertexHeight < CLAY_THRESHOLD)
+			return GameColors::cley;
+
+		if (vertexHeight < SAND_THRESHOLD)
+			return GameColors::sand;
+
+		if (vertexHeight < GRASS_THRESHOLD)
+			return GameColors::grass;
+
+		if (vertexHeight < ROCK_THRESHOLD)
+			return GameColors::rock;
+
+		if (vertexHeight < HARDROCK_THRESHOLD)
+			return GameColors::hardrock;
+
+		if (vertexHeight < SNOW_THRESHOLD)
+			return GameColors::snow;
+
+		return GameColors::ice;
 	}
 
 private:

@@ -23,5 +23,14 @@ struct Point3D
     T z;
 };
 
+class MathUtils
+{
+public:
+    static float remapValue(float value, float fromBoundsStart, float fromBoundsEnd, float toBoundsStart, float toBoundsEnd)
+	{
+        return (value - fromBoundsStart) / (fromBoundsEnd - fromBoundsStart) * (toBoundsEnd - toBoundsStart) + toBoundsStart;
+    }
+};
+
 using Point3Df = Point3D<float>;
 using Point2Df = Point2D<float>;

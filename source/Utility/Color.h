@@ -13,9 +13,9 @@ struct Color
     T b = 0;
     T a = 1;
 
-	static Color convertRGBto01(const T& r_, const T& g_, const T& b_, const T& a_ = 255)
+	Color convertRGBto01()
     {
-        return { r_ / 255.f, g_ / 255.f, b_ / 255.f, a_ / 255.f };
+        return { r / 255.f, g / 255.f, b / 255.f, a / 255.f };
     }
 };
 
@@ -30,3 +30,20 @@ struct vertex_struct_color
     Point3D<T> point;
     Color<T> color;
 };
+
+using ColorF = Color<float>;
+
+namespace GameColors
+{
+	inline ColorF sky           { ColorF(178, 194, 225).convertRGBto01() };
+	inline ColorF abyssWater    { ColorF(11, 36, 71).convertRGBto01() };
+	inline ColorF deepwater     { ColorF(25, 55, 109).convertRGBto01() };
+	inline ColorF water         { ColorF(130, 148, 196).convertRGBto01() };
+	inline ColorF cley          { ColorF(214, 205, 164).convertRGBto01() };
+	inline ColorF sand          { ColorF(247, 208, 96).convertRGBto01() };
+	inline ColorF grass         { ColorF(61, 131, 97).convertRGBto01() };
+	inline ColorF rock          { ColorF(130, 125, 120).convertRGBto01() };
+	inline ColorF hardrock      { ColorF(80, 75, 70).convertRGBto01() };
+	inline ColorF snow          { ColorF(236, 242, 255).convertRGBto01() };
+	inline ColorF ice           { ColorF(165, 215, 232).convertRGBto01() };
+}

@@ -9,7 +9,7 @@
 
 #include "SceneObjects/Camera/Camera.h"
 #include "Utility/Maths.h"
-#include "ProceduralGeneration/HeighMap/HeighMap.h"
+#include "ProceduralGeneration/HeighMap/HeightMap.h"
 
 constexpr float WINDOW_BASE_WIDTH = 800.f;
 constexpr float WINDOW_BASE_HEIGHT = 600.f;
@@ -29,11 +29,11 @@ int main()
     if (glewInit())
         throw std::runtime_error("Error init glew");
 
-    glClearColor(0.69f, 0.76f, 1.f, 1.f);
+    glClearColor(GameColors::sky.r, GameColors::sky.g, GameColors::sky.b, GameColors::sky.a);
 
     // ---- INIT RESOURCES
     Camera camera;
-    HeighMap heighMap;
+    HeighMap heightMap;
     sf::Clock dtClock;
 
     // ---- GAME LOOP
@@ -79,7 +79,7 @@ int main()
 
         // cube.update(deltaTime);
     	//cube.render(vp);
-        heighMap.render(vp);
+        heightMap.render(vp);
 
         glFlush();
 
