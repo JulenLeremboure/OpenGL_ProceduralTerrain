@@ -9,6 +9,7 @@ set(EXECUTABLE_TARGET_NAME opengl-insane-procedural-terrain)
 find_package(SFML COMPONENTS system window graphics network CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(glm REQUIRED)
 
 file(GLOB_RECURSE src_files "source/*.h")
 
@@ -17,7 +18,7 @@ add_executable(${EXECUTABLE_TARGET_NAME}
     "source/main.cpp"
     "source/Rendering/Shader.cpp"
     "source/SceneObjects/Camera/Camera.cpp"
-    "source/ProceduralGeneration/HeightMap/HeightMap.cpp")
+    "source/ProceduralGeneration/HeightMap/HeightMap.cpp" "source/Noise/Noise.h")
 
 # All Resources/ files are copied into out/ after building program
 add_custom_command(TARGET ${EXECUTABLE_TARGET_NAME} PRE_BUILD
@@ -27,3 +28,4 @@ add_custom_command(TARGET ${EXECUTABLE_TARGET_NAME} PRE_BUILD
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE GLEW::GLEW)
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE imgui::imgui)
+target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE glm::glm)

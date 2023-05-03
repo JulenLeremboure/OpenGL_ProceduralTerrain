@@ -4,7 +4,7 @@
 
 HeightMap::HeightMap()
 {
-	load();
+	load(500);
 }
 
 HeightMap::~HeightMap()
@@ -13,24 +13,51 @@ HeightMap::~HeightMap()
 	glDeleteBuffers(1, &m_vbo);
 }
 
-void HeightMap::load()
+double HeightMap::noise(double x, double y) { 
+	// Rescale from -1.0:+1.0 to 0.0:1.0
+	return noiseGen.GetNoise(x, y) / 2.0 + 0.5;
+}
+
+double HeightMap::multipleNoise(double x, double y, double f) { 
+	// Rescale from -1.0:+1.0 to 0.0:1.0
+	//return noiseGen.GetNoise(x, y) / 2.0 + 0.5;
+	double coeff = 0.;
+	float vertexHeight = 0.f;
+	while (f > 0)
+	{
+		vertexHeight += 1/f * noise(f * x, f * y);
+		coeff += 1 / f;
+		f--;
+	}
+
+	return vertexHeight / coeff;
+}
+
+void HeightMap::load(const int seed)
 {
 	constexpr float TERRAIN_WAVE_AMPLITUDE = MAX_VERTEX_HEIGHT / 2.f;
 	constexpr float TERRAIN_WAVE_FREQUENCY = 1 / 8.f;
-	constexpr int MAP_POS_Y_OFFSET = -40;
+	constexpr float MAP_POS_Y_OFFSET = 50;
 
-	for (unsigned int i = 0; i < MAP_HEIGHT; i++)
+	// pour essayer de clear quand on reload mais ça marche pas 
+	/*glDeleteVertexArrays(1, &m_vao);
+	glDeleteBuffers(1, &m_vbo);
+	m_points.clear();*/
+	
+	for (double y = 0; y < MAP_HEIGHT; y++)
 	{
-		for (unsigned int j = 0; j < MAP_WIDTH; j++)
+		for (double x = 0; x < MAP_WIDTH; x++)
 		{
-			const float vertexHeight = std::sin(i * TERRAIN_WAVE_FREQUENCY) * TERRAIN_WAVE_AMPLITUDE + TERRAIN_WAVE_AMPLITUDE;
+			//const float vertexHeight = std::sin(y * TERRAIN_WAVE_FREQUENCY) * TERRAIN_WAVE_AMPLITUDE + TERRAIN_WAVE_AMPLITUDE;
+			//float vertexHeight = noise(x, y);
+			float vertexHeight = multipleNoise(x, y, 4);
 
 			// new vertex
 			vertex_colored newVtColored;
 			newVtColored.point = Point3Df(
-				-MAP_HEIGHT / 2.0f + i,
-				vertexHeight + MAP_POS_Y_OFFSET,
-				-MAP_WIDTH / 2.0f + j);
+				-MAP_HEIGHT / 2.0f + y,
+				vertexHeight * MAP_POS_Y_OFFSET,
+				-MAP_WIDTH / 2.0f + x);
 
 			newVtColored.color = getColorFromVertexHeight(vertexHeight);
 
@@ -130,7 +157,7 @@ Color<float> HeightMap::getColorFromVertexHeight(float vertexHeight)
 	constexpr float HARDROCK_THRESHOLD = 0.85f;
 	constexpr float SNOW_THRESHOLD = 0.95f;
 
-	vertexHeight = MathUtils::remapValue(vertexHeight, MIN_VERTEX_HEIGHT, MAX_VERTEX_HEIGHT, 0, 1);
+	//vertexHeight = MathUtils::remapValue(vertexHeight, MIN_VERTEX_HEIGHT, MAX_VERTEX_HEIGHT, 0, 1);
 
 	if (vertexHeight < ABYSSWATER_THRESHOLD)
 		return GameColors::abyssWater;
