@@ -8,6 +8,7 @@
 HeightMap::HeightMap()
 {
 	m_noiseGen.SetFractalOctaves(10);
+	m_noiseGen.SetFractalGain(0.5f);
 	m_noiseGen.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	load(rand());
 }
@@ -48,7 +49,7 @@ void HeightMap::clear()
 
 void HeightMap::load(const int seed)
 {
-	constexpr float MAP_POS_Y_OFFSET = 50;
+	constexpr float MAP_POS_Y_OFFSET = 80;
 
 	m_noiseGen.SetSeed(seed);
 	
@@ -165,8 +166,6 @@ Color<float> HeightMap::getColorFromVertexHeight(float vertexHeight)
 	constexpr float ROCK_THRESHOLD = 0.75f;
 	constexpr float HARDROCK_THRESHOLD = 0.85f;
 	constexpr float SNOW_THRESHOLD = 0.95f;
-
-	//vertexHeight = MathUtils::remapValue(vertexHeight, MIN_VERTEX_HEIGHT, MAX_VERTEX_HEIGHT, 0, 1);
 
 	if (vertexHeight < ABYSSWATER_THRESHOLD)
 		return GameColors::abyssWater;

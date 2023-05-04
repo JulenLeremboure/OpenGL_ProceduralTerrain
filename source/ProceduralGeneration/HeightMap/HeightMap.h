@@ -9,9 +9,6 @@
 constexpr int MAP_HEIGHT = 1000;
 constexpr int MAP_WIDTH = 1000;
 
-constexpr int MIN_VERTEX_HEIGHT = 0;
-constexpr int MAX_VERTEX_HEIGHT = 10;
-
 class HeightMap
 {
 	using vertex_colored = vertex_struct_color<float>;

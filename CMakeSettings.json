@@ -1,39 +1,40 @@
 {
-  "configurations": [
-    {
-      "name": "x64-Debug",
-      "generator": "Ninja",
-      "configurationType": "Debug",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-      "cmakeExecutable": "C:/Program Files/CMake/bin/cmake.exe"
-    },
-    {
-      "name": "x64-Release",
-      "generator": "Ninja",
-      "configurationType": "RelWithDebInfo",
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
-      "variables": [
+    "configurations": [
         {
-          "name": "GLM_DIR",
-          "value": "D:/Ynov/OpenGL_ProceduralTerrain/out/build/x64-Release/vcpkg_installed/x64-windows/share/glm",
-          "type": "PATH"
+            "name": "x64-Debug",
+            "generator": "Ninja",
+            "configurationType": "Debug",
+            "inheritEnvironments": [ "msvc_x64_x64" ],
+            "buildRoot": "${projectDir}\\out\\build\\${name}",
+            "installRoot": "${projectDir}\\out\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "",
+            "ctestCommandArgs": "",
+            "cmakeExecutable": "C:/Program Files/CMake/bin/cmake.exe"
         },
         {
-          "name": "glm_DIR",
-          "value": "D:/Ynov/OpenGL_ProceduralTerrain/out/build/x64-Release/vcpkg_installed/x64-windows/share/glm",
-          "type": "PATH"
+            "name": "x64-Release",
+            "generator": "Ninja",
+            "configurationType": "Release",
+            "buildRoot": "${projectDir}\\out\\build\\${name}",
+            "installRoot": "${projectDir}\\out\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "",
+            "ctestCommandArgs": "",
+            "inheritEnvironments": [ "msvc_x64_x64" ],
+            "variables": [
+                {
+                    "name": "GLM_DIR",
+                    "value": "D:/Ynov/OpenGL_ProceduralTerrain/out/build/x64-Release/vcpkg_installed/x64-windows/share/glm",
+                    "type": "PATH"
+                },
+                {
+                    "name": "glm_DIR",
+                    "value": "D:/Ynov/OpenGL_ProceduralTerrain/out/build/x64-Release/vcpkg_installed/x64-windows/share/glm",
+                    "type": "PATH"
+                }
+            ],
+            "cmakeExecutable": "C:/Program Files/CMake/bin/cmake.exe"
         }
-      ]
-    }
-  ]
+    ]
 }
