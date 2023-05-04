@@ -2,6 +2,10 @@
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include "Utility/Matrix.h"
 #include "Rendering/Texture.h"
 
@@ -28,8 +32,8 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     //const sf::ContextSettings contextSettings(24, 8, 4, 4, 6);
     //window.setVerticalSyncEnabled(true);
 
@@ -69,6 +73,26 @@ int main()
 
     float lastFrame = 0; // Time of last frame
 
+    // ---- INIT IMGUI
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(glWindow, true);
+	ImGui_ImplOpenGL3_Init("#version 460");
+
+    // ---- Test ImGui
+    float igFloat = 1.5f;
+    int igInt = 50;
+    const char* igItems[]
+    {
+	    "Algo1",
+	    "Algo2",
+	    "Algo3",
+	    "Algo4"
+    };
+    int igSelected = 0;
+
     // ---- GAME LOOP
     while (!glfwWindowShouldClose(glWindow))
     {
@@ -77,6 +101,10 @@ int main()
         lastFrame = currentFrameTime;
 
         glfwGetFramebufferSize(glWindow, &windowWidth, &windowHeight);
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
         // ---- EVENTS
         if (glfwGetKey(glWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -103,11 +131,37 @@ int main()
         glFlush();
         
 
+        ImGui::Begin("Terrain generation settings");
+
+        ImGui::Text("General:");
+        ImGui::SliderFloat("Frequency", &igFloat, 0.f, 2.f);
+        ImGui::SliderInt("Seed", &igInt, 0, 100);
+        ImGui::Text("Fractal:");
+        ImGui::SliderFloat("Octaves", &igFloat, 0.f, 2.f);
+        ImGui::SliderFloat("Lacunarity", &igFloat, 0.f, 2.f);
+        ImGui::SliderFloat("Gain", &igFloat, 0.f, 2.f);
+        ImGui::Text("Algo:");
+        ImGui::ListBox("Algo", &igSelected, igItems, 4);
+
+        
+        if (ImGui::Button("Reload"))
+        {
+	        // DoFunction();
+        }
+        ImGui::End();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(glWindow);
         glfwPollEvents();
     }
 
     // liberation des ressources...
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     glfwDestroyWindow(glWindow);
     glfwTerminate();
 
