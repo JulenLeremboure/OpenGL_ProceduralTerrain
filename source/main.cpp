@@ -2,6 +2,10 @@
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include "Utility/Matrix.h"
 #include "Rendering/Texture.h"
 
@@ -63,6 +67,14 @@ int main()
 
     float lastFrame = 0; // Time of last frame
 
+    // ---- INIT IMGUI
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(glWindow, true);
+	ImGui_ImplOpenGL3_Init("version 110");
+
     // ---- GAME LOOP
     while (!glfwWindowShouldClose(glWindow))
     {
@@ -71,6 +83,10 @@ int main()
         lastFrame = currentFrameTime;
 
         glfwGetFramebufferSize(glWindow, &windowWidth, &windowHeight);
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
         // ---- EVENTS
         if (glfwGetKey(glWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -99,11 +115,22 @@ int main()
 
         glFlush();
 
+        ImGui::Begin("Generation terrain");
+        ImGui::Text("Test");
+        ImGui::End();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(glWindow);
         glfwPollEvents();
     }
 
-    // lib�ration des ressources...
+    // lib?ration des ressources...
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     glfwDestroyWindow(glWindow);
     glfwTerminate();
 
