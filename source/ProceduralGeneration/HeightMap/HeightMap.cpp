@@ -121,8 +121,6 @@ void HeightMap::load(const int seed)
 
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex_colored), (char*)(0) + sizeof(vertex_colored::point));
 	glEnableVertexAttribArray(1);
-
-	glEnable(GL_DEPTH_TEST);
 }
 
 void HeightMap::render(const glm::mat<4, 4, float>& viewProjection)
