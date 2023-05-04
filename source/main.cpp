@@ -75,6 +75,18 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(glWindow, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 
+    // ---- Test ImGui
+    float igFloat = 1.5f;
+    int igInt = 50;
+    const char* igItems[]
+    {
+	    "Algo1",
+	    "Algo2",
+	    "Algo3",
+	    "Algo4"
+    };
+    int igSelected = 0;
+
     // ---- GAME LOOP
     while (!glfwWindowShouldClose(glWindow))
     {
@@ -115,8 +127,23 @@ int main()
 
         glFlush();
 
-        ImGui::Begin("Generation terrain");
-        ImGui::Text("Test");
+        ImGui::Begin("Terrain generation settings");
+
+        ImGui::Text("General:");
+        ImGui::SliderFloat("Frequency", &igFloat, 0.f, 2.f);
+        ImGui::SliderInt("Seed", &igInt, 0, 100);
+        ImGui::Text("Fractal:");
+        ImGui::SliderFloat("Octaves", &igFloat, 0.f, 2.f);
+        ImGui::SliderFloat("Lacunarity", &igFloat, 0.f, 2.f);
+        ImGui::SliderFloat("Gain", &igFloat, 0.f, 2.f);
+        ImGui::Text("Algo:");
+        ImGui::ListBox("Algo", &igSelected, igItems, 4);
+
+        
+        if (ImGui::Button("Reload"))
+        {
+	        // DoFunction();
+        }
         ImGui::End();
 
         ImGui::Render();
