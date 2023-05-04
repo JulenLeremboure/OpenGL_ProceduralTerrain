@@ -73,10 +73,9 @@ int main()
                 heightMap.clear();
                 heightMap.load(rand());
             }
-
-            camera.moveCameraForInput(sfmlEvent, deltaTime);
             camera.rotateCameraForInput(sfmlEvent, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
         }
+        camera.moveCameraForInput(deltaTime);
 
         
         //window.clear();
@@ -112,7 +111,7 @@ int main()
         window.display();
     }
 
-    // lib�ration des ressources...
+    // liberation des ressources...
 
     return 0;
 }

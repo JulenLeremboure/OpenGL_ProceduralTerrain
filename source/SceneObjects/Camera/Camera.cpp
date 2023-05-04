@@ -6,32 +6,29 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 
-void Camera::moveCameraForInput(const sf::Event& inputEvent, float deltaTime)
+void Camera::moveCameraForInput(const float deltaTime)
 {
-    if (inputEvent.type == sf::Event::KeyPressed)
-    {
-		glm::vec3 offsetVecResult{0.f, 0.f, 0.f};
+	glm::vec3 offsetVecResult{0.f, 0.f, 0.f};
 
-        if(inputEvent.key.code == sf::Keyboard::Z)
-	        offsetVecResult += m_cameraFront;
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+	    offsetVecResult += m_cameraFront;
 
-		if(inputEvent.key.code == sf::Keyboard::S)
-		    offsetVecResult -= m_cameraFront;
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		offsetVecResult -= m_cameraFront;
 
-		if(inputEvent.key.code == sf::Keyboard::Q)
-			offsetVecResult -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp));
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+		offsetVecResult -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp));
 
-    	if(inputEvent.key.code == sf::Keyboard::D)
-            offsetVecResult += glm::normalize(glm::cross(m_cameraFront, m_cameraUp));
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        offsetVecResult += glm::normalize(glm::cross(m_cameraFront, m_cameraUp));
 
-    	if(inputEvent.key.code == sf::Keyboard::Space)
-            offsetVecResult.y += 1.0f;
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        offsetVecResult.y += 1.0f;
 
-    	if(inputEvent.key.code == sf::Keyboard::LControl)
-			offsetVecResult.y -= 1.0f;
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+		offsetVecResult.y -= 1.0f;
 
-		m_cameraPos += offsetVecResult * CAMERA_SPEED * deltaTime;
-    }
+	m_cameraPos += offsetVecResult * CAMERA_SPEED * deltaTime;
 }
 
 void Camera::rotateCameraForInput(const sf::Event& inputEvent, float windowWidth, float windowHeight)
