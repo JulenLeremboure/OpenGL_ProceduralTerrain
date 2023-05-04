@@ -6,8 +6,8 @@
 constexpr float CAMERA_FOV = 80.0f / 180.0f * PI;
 constexpr float CAMERA_NEAR_PLANE = 0.1f;
 constexpr float CAMERA_FAR_PLANE = 1000.0f;
-constexpr float CAMERA_SPEED = 300.f;
-constexpr float CAMERA_SENSITIVITY = 0.4f;
+constexpr float CAMERA_SPEED = 120.f;
+constexpr float CAMERA_SENSITIVITY = 0.1f;
 
 /**
  * Source : https://learnopengl.com/Getting-started/Camera

@@ -20,32 +20,9 @@ HeightMap::~HeightMap()
 
 double HeightMap::noise(double x, double y) { 
 	// Rescale from -1.0:+1.0 to 0.0:1.0
-	double t = m_noiseGen.GetNoise(x, y) / 2.0 + 0.5 ;
-	return t ;
+	return m_noiseGen.GetNoise(x, y) / 2.0 + 0.5;
 }
 
-double HeightMap::noise(FastNoiseLite noiseGen, double x, double y) {
-	// Rescale from -1.0:+1.0 to 0.0:1.0
-	noiseGen.SetSeed(rand());
-	double t = noiseGen.GetNoise(x, y) / 2.0 + 0.5;
-	return t;
-}
-
-double HeightMap::multipleNoise(double x, double y, double f) { 
-	// Rescale from -1.0:+1.0 to 0.0:1.0
-	//return noiseGen.GetNoise(x, y) / 2.0 + 0.5;
-	double coeff = 0.;
-	float vertexHeight = 0.f;
-	while (f > 0)
-	{
-		FastNoiseLite noiseGen;
-		vertexHeight += 1/f * noise(f * x, f * y);
-		coeff += 1 / f;
-		f--;
-	}
-
-	return vertexHeight / coeff;
-}
 
 void HeightMap::test()
 {
@@ -79,8 +56,7 @@ void HeightMap::load(const int seed)
 	{
 		for (double x = 0; x < MAP_WIDTH; x++)
 		{
-			//float vertexHeight = noise(x, y);
-			float vertexHeight = multipleNoise(x, y, 2);
+			float vertexHeight = noise(x, y);
 
 			// new vertex
 			vertex_colored newVtColored;

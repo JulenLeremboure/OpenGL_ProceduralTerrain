@@ -54,13 +54,11 @@ int main()
     glViewport(0, 0, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
 
     glEnable(GL_DEPTH_TEST);
-    glfwSetInputMode(glWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(glWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(glWindow, mouseMovedCallback);
 
     // ---- INIT RESOURCES
     srand(time(NULL));
-    sf::Clock dtClock;
-    sf::Clock fpsClock;
     Camera camera(glWindow, glm::vec3(0.f, 50.f, 0.f));
     HeightMap heightMap;
 
@@ -104,21 +102,6 @@ int main()
 
         glFlush();
         
-
-        // show fps
-        if (fpsClock.getElapsedTime().asSeconds() >= 1.f)
-        {
-            mFps = mFrame;
-            mFrame = 0;
-            fpsClock.restart();
-        }
-
-        ++mFrame;
-
-        std::ostringstream ss;
-        ss << mFps;
-
-        window.setTitle(ss.str());
 
         glfwSwapBuffers(glWindow);
         glfwPollEvents();

@@ -10,7 +10,7 @@ constexpr int MAP_HEIGHT = 1000;
 constexpr int MAP_WIDTH = 1000;
 
 constexpr int MIN_VERTEX_HEIGHT = 0;
-constexpr int MAX_VERTEX_HEIGHT = 20;
+constexpr int MAX_VERTEX_HEIGHT = 10;
 
 class HeightMap
 {
@@ -24,8 +24,6 @@ public:
 	void clear();
 	void render(Camera& camera, const float aspect_ratio);
 	double noise(double x, double y);
-	double noise(FastNoiseLite noiseGen, double x, double y);
-	double multipleNoise(double x, double y, double t);
 	void test();
 
 private:
