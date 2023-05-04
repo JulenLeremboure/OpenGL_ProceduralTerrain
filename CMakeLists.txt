@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(EXECUTABLE_TARGET_NAME opengl-insane-procedural-terrain)
 
-find_package(SFML COMPONENTS system window graphics network CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
@@ -25,7 +25,7 @@ add_custom_command(TARGET ${EXECUTABLE_TARGET_NAME} PRE_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${CMAKE_SOURCE_DIR}/source/Resources/ $<TARGET_FILE_DIR:${EXECUTABLE_TARGET_NAME}>/Resources)
 
-target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE glfw)
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE GLEW::GLEW)
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE imgui::imgui)
 target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE glm::glm)

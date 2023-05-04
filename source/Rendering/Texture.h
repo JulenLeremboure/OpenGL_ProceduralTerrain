@@ -4,7 +4,6 @@
 #include <string>
 #include <stdexcept>
 
-#include "SFML/Graphics/Image.hpp"
 #include "Utility/Maths.h"
 
 template<typename T>
@@ -42,12 +41,12 @@ struct Texture
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        sf::Image image;
-        if (!image.loadFromFile(filename))
-            throw std::runtime_error("Cannot load texture");
+        //sf::Image image;
+        //if (!image.loadFromFile(filename))
+        //    throw std::runtime_error("Cannot load texture");
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-        glGenerateMipmap(GL_TEXTURE_2D);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+        //glGenerateMipmap(GL_TEXTURE_2D);
     }
 
     void bind() const

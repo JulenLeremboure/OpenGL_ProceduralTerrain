@@ -1,14 +1,13 @@
 #pragma once
 
-#include "SFML/Window/Event.hpp"
 #include "../../Utility/Maths.h"
-#include "../../Utility/Matrix.h"
+#include "GLFW/glfw3.h"
 
 constexpr float CAMERA_FOV = 80.0f / 180.0f * PI;
 constexpr float CAMERA_NEAR_PLANE = 0.1f;
 constexpr float CAMERA_FAR_PLANE = 1000.0f;
 constexpr float CAMERA_SPEED = 300.f;
-constexpr float CAMERA_SENSITIVITY = 0.05f;
+constexpr float CAMERA_SENSITIVITY = 0.4f;
 
 /**
  * Source : https://learnopengl.com/Getting-started/Camera
@@ -16,12 +15,10 @@ constexpr float CAMERA_SENSITIVITY = 0.05f;
 class Camera
 {
 public:
-    Camera(const glm::vec3& initialPos = glm::vec3(0.f, 200.f, 0.f)) :
-		m_cameraPos(initialPos)
-	{ }
+    Camera(GLFWwindow* window, const glm::vec3& initialPos = glm::vec3(0.f, 200.f, 0.f));
 
-    void moveCameraForInput(const sf::Event& inputEvent, float deltaTime);
-    void rotateCameraForInput(const sf::Event& inputEvent, float windowWidth, float windowHeight);
+    void moveCameraForInput(GLFWwindow* window, float deltaTime);
+	void rotateCameraForInput(float xPos, float yPos);
 
 public:
 
