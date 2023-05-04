@@ -5,12 +5,13 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 
-HeightMap::HeightMap()
+HeightMap::HeightMap() : m_seed(10), m_octaves(3), m_frequency(0.01f), m_lacunarity(2.0f), m_gain(0.5f)
 {
 	m_noiseGen.SetFractalOctaves(10);
 	m_noiseGen.SetFractalGain(0.5f);
+	m_noiseGen.SetSeed(2);
 	m_noiseGen.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	load(rand());
+	load();
 }
 
 HeightMap::~HeightMap()
@@ -24,11 +25,11 @@ double HeightMap::noise(double x, double y) {
 	return m_noiseGen.GetNoise(x, y) / 2.0 + 0.5;
 }
 
+//double HeightMap::noise(FastNoiseLite noiseGen, double x, double y) {
+//	// Rescale from -1.0:+1.0 to 0.0:1.0
+//	return noiseGen.GetNoise(x, y) / 2.0 + 0.5;
+//}
 
-void HeightMap::test()
-{
-	/*noiseGen.*/
-}
 
 void HeightMap::clear()
 {
@@ -47,26 +48,31 @@ void HeightMap::clear()
 	m_program = 0;
 }
 
-void HeightMap::load(const int seed)
+void HeightMap::load()
 {
-	constexpr float MAP_POS_Y_OFFSET = 80;
+	constexpr float MAP_POS_Y_OFFSET = 50;
 
-	m_noiseGen.SetSeed(seed);
+	//m_noiseGen.SetFractalOctaves(m_octaves);
+	/*m_noiseGen.SetFractalGain(m_gain);
+	m_noiseGen.SetFrequency(m_frequency);
+	m_noiseGen.SetFractalLacunarity(m_lacunarity);
+	m_noiseGen.SetSeed(m_seed);
+	m_noiseGen.SetNoiseType(FastNoiseLite::NoiseType_Perlin);*/
 	
 	for (double y = 0; y < MAP_HEIGHT; y++)
 	{
 		for (double x = 0; x < MAP_WIDTH; x++)
 		{
-			float vertexHeight = noise(x, y);
+			float elevation = noise(x, y);
 
 			// new vertex
 			vertex_colored newVtColored;
 			newVtColored.point = Point3Df(
 				-MAP_HEIGHT / 2.0f + y,
-				vertexHeight * MAP_POS_Y_OFFSET,
+				elevation * MAP_POS_Y_OFFSET * 2,
 				-MAP_WIDTH / 2.0f + x);
 
-			newVtColored.color = getColorFromVertexHeight(vertexHeight);
+			newVtColored.color = getColorFromVertexHeight(elevation);
 
 			m_points.emplace_back(newVtColored);
 		}
@@ -155,7 +161,7 @@ void HeightMap::render(Camera& camera, const float aspect_ratio)
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &matViewByProj[0][0]);
 }
 
-Color<float> HeightMap::getColorFromVertexHeight(float vertexHeight)
+Color<float> HeightMap::getColorFromVertexHeight(float elevation)
 {
 	constexpr float ABYSSWATER_THRESHOLD = 0.03f;
 	constexpr float DEEPWATER_THRESHOLD = 0.08f;
@@ -167,31 +173,31 @@ Color<float> HeightMap::getColorFromVertexHeight(float vertexHeight)
 	constexpr float HARDROCK_THRESHOLD = 0.85f;
 	constexpr float SNOW_THRESHOLD = 0.95f;
 
-	if (vertexHeight < ABYSSWATER_THRESHOLD)
+	if (elevation < ABYSSWATER_THRESHOLD)
 		return GameColors::abyssWater;
 
-	if (vertexHeight < DEEPWATER_THRESHOLD)
+	if (elevation < DEEPWATER_THRESHOLD)
 		return GameColors::deepwater;
 
-	if (vertexHeight < WATER_THRESHOLD)
+	if (elevation < WATER_THRESHOLD)
 		return GameColors::water;
 
-	if (vertexHeight < CLAY_THRESHOLD)
+	if (elevation < CLAY_THRESHOLD)
 		return GameColors::cley;
 
-	if (vertexHeight < SAND_THRESHOLD)
+	if (elevation < SAND_THRESHOLD)
 		return GameColors::sand;
 
-	if (vertexHeight < GRASS_THRESHOLD)
+	if (elevation < GRASS_THRESHOLD)
 		return GameColors::grass;
 
-	if (vertexHeight < ROCK_THRESHOLD)
+	if (elevation < ROCK_THRESHOLD)
 		return GameColors::rock;
 
-	if (vertexHeight < HARDROCK_THRESHOLD)
+	if (elevation < HARDROCK_THRESHOLD)
 		return GameColors::hardrock;
 
-	if (vertexHeight < SNOW_THRESHOLD)
+	if (elevation < SNOW_THRESHOLD)
 		return GameColors::snow;
 
 	return GameColors::ice;

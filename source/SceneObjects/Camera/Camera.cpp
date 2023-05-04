@@ -36,6 +36,7 @@ void Camera::moveCameraForInput(GLFWwindow* window, float deltaTime)
 
 void Camera::rotateCameraForInput(float xPos, float yPos)
 {
+    if (!m_rotationIsActive) return;
     if (m_isFirstMouseInput)
     {
         m_lastX = xPos;

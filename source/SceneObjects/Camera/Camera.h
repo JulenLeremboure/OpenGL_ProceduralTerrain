@@ -15,7 +15,7 @@ constexpr float CAMERA_SENSITIVITY = 0.1f;
 class Camera
 {
 public:
-    Camera(GLFWwindow* window, const glm::vec3& initialPos = glm::vec3(0.f, 200.f, 0.f));
+    Camera(GLFWwindow* window, const glm::vec3& initialPos = glm::vec3(0.f, 0.f, 0.f));
 
     void moveCameraForInput(GLFWwindow* window, float deltaTime);
 	void rotateCameraForInput(float xPos, float yPos);
@@ -31,4 +31,5 @@ public:
 
     float m_lastX{ 0.f }, m_lastY{ 0.f }, m_yaw{ 0.f }, m_pitch{ 0.f };
     bool m_isFirstMouseInput{ false };
+    bool m_rotationIsActive = true;
 };

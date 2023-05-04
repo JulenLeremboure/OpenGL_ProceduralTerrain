@@ -17,14 +17,23 @@ public:
 	HeightMap();
 	~HeightMap();
 
-	void load(const int seed);
+	void load();
 	void clear();
 	void render(Camera& camera, const float aspect_ratio);
 	double noise(double x, double y);
+	double noise(FastNoiseLite noiseGen, double x, double y);
 	void test();
 
+	// todo make a struct noise_params
+	int m_seed;
+	float m_frequency;
+	int m_octaves;
+	float m_lacunarity;
+	float m_gain;
+	FastNoiseLite::NoiseType m_noiseType;
+
 private:
-	static Color<float> getColorFromVertexHeight(float vertexHeight);
+	static Color<float> getColorFromVertexHeight(float elevation);
 
 	GLuint m_vao { 0 };
 	GLuint m_vbo{ 0 };
@@ -33,6 +42,16 @@ private:
 
 	// Create and configure FastNoise object
 	FastNoiseLite m_noiseGen;
+	
+	/*float mFractalBounding;*/
+	/*CellularDistanceFunction mCellularDistanceFunction;
+	CellularReturnType mCellularReturnType;
+	float mCellularJitterModifier;*/
+
+	/*DomainWarpType mDomainWarpType;
+	TransformType3D mWarpTransformType3D;
+	float mDomainWarpAmp;*/
+	
 
 	std::vector<vertex_colored> m_points;
 };

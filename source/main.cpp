@@ -59,11 +59,11 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(glWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(glWindow, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
     glfwSetCursorPosCallback(glWindow, mouseMovedCallback);
 
     // ---- INIT RESOURCES
-    srand(time(NULL));
-    Camera camera(glWindow, glm::vec3(0.f, 50.f, 0.f));
+    Camera camera(glWindow, glm::vec3(0.f, 150.f, 0.f));
     HeightMap heightMap;
 
     // for fps
@@ -82,8 +82,6 @@ int main()
 	ImGui_ImplOpenGL3_Init("#version 460");
 
     // ---- Test ImGui
-    float igFloat = 1.5f;
-    int igInt = 50;
     const char* igItems[]
     {
 	    "Algo1",
@@ -114,7 +112,15 @@ int main()
         else if (glfwGetKey(glWindow, GLFW_KEY_R) == GLFW_PRESS)
         {
             heightMap.clear();
-            heightMap.load(rand());
+            heightMap.load();
+        }
+        else if (glfwGetKey(glWindow, GLFW_KEY_Q) == GLFW_PRESS) 
+        {
+            if (camera.m_rotationIsActive)
+                glfwSetInputMode(glWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            else
+                glfwSetInputMode(glWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            camera.m_rotationIsActive = !camera.m_rotationIsActive;
         }
 
         camera.moveCameraForInput(glWindow, deltaTime);
@@ -131,23 +137,18 @@ int main()
         glFlush();
         
 
+        // ImGui
         ImGui::Begin("Terrain generation settings");
 
         ImGui::Text("General:");
-        ImGui::SliderFloat("Frequency", &igFloat, 0.f, 2.f);
-        ImGui::SliderInt("Seed", &igInt, 0, 100);
+        ImGui::SliderFloat("Frequency", &heightMap.m_frequency, 0.f, 0.1f);
+        ImGui::SliderInt("Seed", &heightMap.m_seed, 0, RAND_MAX);
         ImGui::Text("Fractal:");
-        ImGui::SliderFloat("Octaves", &igFloat, 0.f, 2.f);
-        ImGui::SliderFloat("Lacunarity", &igFloat, 0.f, 2.f);
-        ImGui::SliderFloat("Gain", &igFloat, 0.f, 2.f);
+        ImGui::SliderInt("Octaves", &heightMap.m_octaves, 0, 10);
+        ImGui::SliderFloat("Lacunarity", &heightMap.m_lacunarity, 1.f, 10.f);
+        ImGui::SliderFloat("Gain", &heightMap.m_gain, 0.f, 2.f);
         ImGui::Text("Algo:");
         ImGui::ListBox("Algo", &igSelected, igItems, 4);
-
-        
-        if (ImGui::Button("Reload"))
-        {
-	        // DoFunction();
-        }
         ImGui::End();
 
         ImGui::Render();
