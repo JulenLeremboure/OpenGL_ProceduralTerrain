@@ -7,6 +7,8 @@
 
 HeightMap::HeightMap()
 {
+	m_noiseGen.SetFractalOctaves(10);
+	m_noiseGen.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	load(rand());
 }
 
@@ -18,7 +20,15 @@ HeightMap::~HeightMap()
 
 double HeightMap::noise(double x, double y) { 
 	// Rescale from -1.0:+1.0 to 0.0:1.0
-	return noiseGen.GetNoise(x, y) / 2.0 + 0.5;
+	double t = m_noiseGen.GetNoise(x, y) / 2.0 + 0.5 ;
+	return t ;
+}
+
+double HeightMap::noise(FastNoiseLite noiseGen, double x, double y) {
+	// Rescale from -1.0:+1.0 to 0.0:1.0
+	noiseGen.SetSeed(rand());
+	double t = noiseGen.GetNoise(x, y) / 2.0 + 0.5;
+	return t;
 }
 
 double HeightMap::multipleNoise(double x, double y, double f) { 
@@ -28,12 +38,18 @@ double HeightMap::multipleNoise(double x, double y, double f) {
 	float vertexHeight = 0.f;
 	while (f > 0)
 	{
+		FastNoiseLite noiseGen;
 		vertexHeight += 1/f * noise(f * x, f * y);
 		coeff += 1 / f;
 		f--;
 	}
 
 	return vertexHeight / coeff;
+}
+
+void HeightMap::test()
+{
+	/*noiseGen.*/
 }
 
 void HeightMap::clear()
@@ -55,19 +71,16 @@ void HeightMap::clear()
 
 void HeightMap::load(const int seed)
 {
-	constexpr float TERRAIN_WAVE_AMPLITUDE = MAX_VERTEX_HEIGHT / 2.f;
-	constexpr float TERRAIN_WAVE_FREQUENCY = 1 / 8.f;
 	constexpr float MAP_POS_Y_OFFSET = 50;
 
-	noiseGen.SetSeed(seed);
+	m_noiseGen.SetSeed(seed);
 	
 	for (double y = 0; y < MAP_HEIGHT; y++)
 	{
 		for (double x = 0; x < MAP_WIDTH; x++)
 		{
-			//const float vertexHeight = std::sin(y * TERRAIN_WAVE_FREQUENCY) * TERRAIN_WAVE_AMPLITUDE + TERRAIN_WAVE_AMPLITUDE;
 			//float vertexHeight = noise(x, y);
-			float vertexHeight = multipleNoise(x, y, 4);
+			float vertexHeight = multipleNoise(x, y, 2);
 
 			// new vertex
 			vertex_colored newVtColored;
@@ -139,7 +152,7 @@ void HeightMap::load(const int seed)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void HeightMap::render(const glm::mat<4, 4, float>& viewProjection)
+void HeightMap::render(Camera& camera, const float aspect_ratio)
 {
 	constexpr int NUM_STRIPS = MAP_HEIGHT - 1;
 	constexpr int NUM_VERTS_PER_STRIP = MAP_WIDTH * 2;
@@ -160,7 +173,11 @@ void HeightMap::render(const glm::mat<4, 4, float>& viewProjection)
 
 	const auto mvpLocation = glGetUniformLocation(m_program, "model");
 
-	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &viewProjection[0][0]);
+	const auto matView = glm::lookAt(camera.m_cameraPos, camera.m_cameraPos + camera.m_cameraFront, camera.m_cameraUp);
+	const auto matProj = glm::perspective(CAMERA_FOV, aspect_ratio, CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE);
+	const auto matViewByProj = matProj * matView;
+
+	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &matViewByProj[0][0]);
 }
 
 Color<float> HeightMap::getColorFromVertexHeight(float vertexHeight)

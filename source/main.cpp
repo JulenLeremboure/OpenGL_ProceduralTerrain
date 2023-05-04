@@ -83,12 +83,7 @@ int main()
         // effacement les tampons de couleur/profondeur
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        const auto matView = glm::lookAt(camera.m_cameraPos, camera.m_cameraPos + camera.m_cameraFront, camera.m_cameraUp);
-
-        const auto matProj = glm::perspective(CAMERA_FOV, WINDOW_ASPECT_RATIO, CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE);
-        const auto matViewByProj = matProj * matView;
-
-        heightMap.render(matViewByProj);
+        heightMap.render(camera, WINDOW_ASPECT_RATIO);
 
         glFlush();
         
