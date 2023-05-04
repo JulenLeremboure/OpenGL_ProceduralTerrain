@@ -1,6 +1,6 @@
+#include <iostream>
 #include <gl/glew.h>
-
-#include "SFML/Graphics.hpp"
+#include <GLFW/glfw3.h>
 
 #include "Utility/Matrix.h"
 #include "Rendering/Texture.h"
@@ -17,65 +17,82 @@ constexpr float WINDOW_BASE_WIDTH = 1600.f;
 constexpr float WINDOW_BASE_HEIGHT = 800.f;
 constexpr float WINDOW_ASPECT_RATIO = WINDOW_BASE_WIDTH / WINDOW_BASE_HEIGHT;
 
+void mouseMovedCallback(GLFWwindow* window, double xPos, double yPos);
+
+static float s_mousePosX{ 0.f }, s_mousePosY { 0.f };
+
 int main()
 {
-    // Set version of opengl to 4.6
-    const sf::ContextSettings contextSettings(24, 8, 4, 4, 6);
+    if (!glfwInit())
+    {
+        exit(EXIT_FAILURE);
+    }
 
-    sf::RenderWindow window(sf::VideoMode(WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT), "OpenGL", sf::Style::None, contextSettings);
-    window.setVerticalSyncEnabled(true);
-    window.setActive(true);
-    window.setMouseCursorVisible(false);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    //const sf::ContextSettings contextSettings(24, 8, 4, 4, 6);
+    //window.setVerticalSyncEnabled(true);
+
+    GLFWwindow* glWindow = glfwCreateWindow(WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT, "Insane procedural terrain", nullptr, nullptr);
+    if (!glWindow)
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+	int windowWidth = WINDOW_BASE_WIDTH;
+	int windowHeight = WINDOW_BASE_HEIGHT;
+
+    glfwMakeContextCurrent(glWindow);
+    glfwSwapInterval(1);
 
     glewExperimental = GL_TRUE;
     if (glewInit())
         throw std::runtime_error("Error init glew");
 
     glClearColor(GameColors::sky.r, GameColors::sky.g, GameColors::sky.b, GameColors::sky.a);
+    glViewport(0, 0, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
+
+    glEnable(GL_DEPTH_TEST);
+    glfwSetInputMode(glWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetCursorPosCallback(glWindow, mouseMovedCallback);
 
     // ---- INIT RESOURCES
     srand(time(NULL));
-    Camera camera;
-    HeightMap heightMap;
     sf::Clock dtClock;
     sf::Clock fpsClock;
+    Camera camera(glWindow, glm::vec3(0.f, 50.f, 0.f));
+    HeightMap heightMap;
 
     // for fps
     int mFrame = 0;
     int mFps = 0;
+    
+
+    float lastFrame = 0; // Time of last frame
 
     // ---- GAME LOOP
-    bool isProgramRunning = true;
-
-    while (isProgramRunning)
+    while (!glfwWindowShouldClose(glWindow))
     {
-        float deltaTime = dtClock.restart().asSeconds();
+        const auto currentFrameTime = static_cast<float>(glfwGetTime());
+        const float deltaTime = currentFrameTime - lastFrame;
+        lastFrame = currentFrameTime;
+
+        glfwGetFramebufferSize(glWindow, &windowWidth, &windowHeight);
 
         // ---- EVENTS
-        sf::Event sfmlEvent;
-        while (window.pollEvent(sfmlEvent))
+        if (glfwGetKey(glWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         {
-            if (sfmlEvent.type == sf::Event::Closed
-             || sfmlEvent.type == sf::Event::KeyPressed && sfmlEvent.key.code == sf::Keyboard::Escape)
-            {
-                isProgramRunning = false;
-            }
-            else if (sfmlEvent.type == sf::Event::Resized)
-            {
-                glViewport(0, 0, sfmlEvent.size.width, sfmlEvent.size.height);
-            }
-            else if (sfmlEvent.type == sf::Event::MouseMoved)
-            {
-                sf::Mouse::setPosition(sf::Vector2i(WINDOW_BASE_WIDTH / 2.f, WINDOW_BASE_HEIGHT / 2.f), window);
-            }
-            else if (sfmlEvent.type == sf::Event::KeyPressed && sfmlEvent.key.code == sf::Keyboard::A)
-            {
-                heightMap.clear();
-                heightMap.load(rand());
-            }
-            camera.rotateCameraForInput(sfmlEvent, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
+            glfwSetWindowShouldClose(glWindow, GLFW_TRUE);
         }
-        camera.moveCameraForInput(deltaTime);
+        else if (glfwGetKey(glWindow, GLFW_KEY_R) == GLFW_PRESS)
+        {
+            heightMap.clear();
+            heightMap.load(rand());
+        }
+
+        camera.moveCameraForInput(glWindow, deltaTime);
+        camera.rotateCameraForInput(s_mousePosX, s_mousePosY);
 
         
         //window.clear();
@@ -103,10 +120,19 @@ int main()
 
         window.setTitle(ss.str());
 
-        window.display();
+        glfwSwapBuffers(glWindow);
+        glfwPollEvents();
     }
 
     // liberation des ressources...
+    glfwDestroyWindow(glWindow);
+    glfwTerminate();
 
-    return 0;
+    exit(EXIT_SUCCESS);
+}
+
+void mouseMovedCallback(GLFWwindow* window, double xPos, double yPos)
+{
+    s_mousePosX = static_cast<float>(xPos);
+    s_mousePosY = static_cast<float>(yPos);
 }
