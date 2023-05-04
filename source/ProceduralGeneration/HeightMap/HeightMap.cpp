@@ -4,7 +4,7 @@
 
 HeightMap::HeightMap()
 {
-	load(500);
+	load(rand());
 }
 
 HeightMap::~HeightMap()
@@ -33,16 +33,30 @@ double HeightMap::multipleNoise(double x, double y, double f) {
 	return vertexHeight / coeff;
 }
 
+void HeightMap::clear()
+{
+	// Nettoyage des données
+	m_points.clear();
+
+	// Nettoyage des buffers
+	glDeleteBuffers(1, &m_vbo);
+	glDeleteBuffers(1, &m_ebo);
+	glDeleteVertexArrays(1, &m_vao);
+
+	// Réinitialisation des variables
+	m_vao = 0;
+	m_vbo = 0;
+	m_ebo = 0;
+	m_program = 0;
+}
+
 void HeightMap::load(const int seed)
 {
 	constexpr float TERRAIN_WAVE_AMPLITUDE = MAX_VERTEX_HEIGHT / 2.f;
 	constexpr float TERRAIN_WAVE_FREQUENCY = 1 / 8.f;
 	constexpr float MAP_POS_Y_OFFSET = 50;
 
-	// pour essayer de clear quand on reload mais ça marche pas 
-	/*glDeleteVertexArrays(1, &m_vao);
-	glDeleteBuffers(1, &m_vbo);
-	m_points.clear();*/
+	noiseGen.SetSeed(seed);
 	
 	for (double y = 0; y < MAP_HEIGHT; y++)
 	{

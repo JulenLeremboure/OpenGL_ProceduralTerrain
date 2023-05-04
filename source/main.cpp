@@ -8,9 +8,10 @@
 #include "SceneObjects/Camera/Camera.h"
 #include "Utility/Maths.h"
 #include "ProceduralGeneration/HeightMap/HeightMap.h"
+#include <iostream>
 
-constexpr float WINDOW_BASE_WIDTH = 800.f;
-constexpr float WINDOW_BASE_HEIGHT = 600.f;
+constexpr float WINDOW_BASE_WIDTH = 1600.f;
+constexpr float WINDOW_BASE_HEIGHT = 800.f;
 
 constexpr float WINDOW_ASPECT_RATIO = WINDOW_BASE_WIDTH / WINDOW_BASE_HEIGHT;
 
@@ -19,9 +20,10 @@ int main()
     // Set version of opengl to 4.6
     const sf::ContextSettings contextSettings(24, 8, 4, 4, 6);
 
-    sf::Window window(sf::VideoMode(WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT), "OpenGL", sf::Style::Default, contextSettings);
+    sf::RenderWindow window(sf::VideoMode(WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT), "OpenGL", sf::Style::None, contextSettings);
     window.setVerticalSyncEnabled(true);
     window.setActive(true);
+    window.setMouseCursorVisible(false);
 
     glewExperimental = GL_TRUE;
     if (glewInit())
@@ -30,9 +32,15 @@ int main()
     glClearColor(GameColors::sky.r, GameColors::sky.g, GameColors::sky.b, GameColors::sky.a);
 
     // ---- INIT RESOURCES
+    srand(time(NULL));
     Camera camera;
     HeightMap heightMap;
     sf::Clock dtClock;
+    sf::Clock fpsClock;
+
+    // for fps
+    int mFrame = 0;
+    int mFps = 0;
 
     // ---- GAME LOOP
     bool isProgramRunning = true;
@@ -60,14 +68,16 @@ int main()
             }
             else if (sfmlEvent.type == sf::Event::KeyPressed && sfmlEvent.key.code == sf::Keyboard::A)
             {
-                heightMap.load(10);
+                heightMap.clear();
+                heightMap.load(rand());
             }
             camera.moveCameraForInput(sfmlEvent, deltaTime);
             camera.rotateCameraForInput(sfmlEvent, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
         }
 
+        
+        //window.clear();
         // ---- DRAWINGS
-
         // effacement les tampons de couleur/profondeur
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -80,6 +90,22 @@ int main()
         heightMap.render(matViewByProj);
 
         glFlush();
+        
+
+        // show fps
+        if (fpsClock.getElapsedTime().asSeconds() >= 1.f)
+        {
+            mFps = mFrame;
+            mFrame = 0;
+            fpsClock.restart();
+        }
+
+        ++mFrame;
+
+        std::ostringstream ss;
+        ss << mFps;
+
+        window.setTitle(ss.str());
 
         window.display();
     }
