@@ -32,8 +32,8 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     //const sf::ContextSettings contextSettings(24, 8, 4, 4, 6);
     //window.setVerticalSyncEnabled(true);
 
@@ -73,7 +73,7 @@ int main()
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(glWindow, true);
-	ImGui_ImplOpenGL3_Init("version 110");
+	ImGui_ImplOpenGL3_Init("#version 460");
 
     // ---- GAME LOOP
     while (!glfwWindowShouldClose(glWindow))
