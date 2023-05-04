@@ -1,30 +1,55 @@
 #include "Camera.h"
 
+#include <iostream>
+
+#include "glm/glm.hpp"  
+#include "glm/gtc/matrix_transform.hpp"
+
+
 void Camera::moveCameraForInput(const sf::Event& inputEvent, float deltaTime)
 {
     if (inputEvent.type == sf::Event::KeyPressed)
     {
+		Point3Df offsetVecResult{0.f, 0.f, 0.f};
+
         switch (inputEvent.key.code)
         {
 	        case sf::Keyboard::Z:
-	            m_cameraPos.z -= CAMERA_SPEED * deltaTime;
+				offsetVecResult.z -= 1.0f;
 	            break;
 	        case sf::Keyboard::S:
-	            m_cameraPos.z += CAMERA_SPEED * deltaTime;
+				offsetVecResult.z += 1.0f;
 	            break;
 	        case sf::Keyboard::Q:
-	            m_cameraPos.x -= CAMERA_SPEED * deltaTime;
+				offsetVecResult.x -= 1.0f;
 	            break;
 	        case sf::Keyboard::D:
-	            m_cameraPos.x += CAMERA_SPEED * deltaTime;
+				offsetVecResult.x += 1.0f;
 	            break;
 	        case sf::Keyboard::Space:
-	            m_cameraPos.y += CAMERA_SPEED * deltaTime;
+				offsetVecResult.y += 1.0f;
 	            break;
-	        case sf::Keyboard::LControl: // TODO : Understand why LShift or LControl doesn't work
-	            m_cameraPos.y -= CAMERA_SPEED * deltaTime;
+	        case sf::Keyboard::LControl:
+				offsetVecResult.y -= 1.0f;
 	            break;
         }
+
+		//if (offsetVecResult == Point3Df(0.f, 0.f, 0.f))
+		//	return;
+
+		//m_cameraMovement =  offsetVecResult * CAMERA_SPEED * deltaTime;
+
+		Mat4<float> matTranslationByRot = Mat4<float>::rotationX(-m_cameraBeta) *
+							 Mat4<float>::rotationY(-m_cameraAlpha) * 
+							Mat4<float>::translation(offsetVecResult * CAMERA_SPEED * deltaTime);
+
+		std::cout << "x: " << m_cameraBeta << " | y: " << m_cameraAlpha << std::endl;
+
+		Point3Df offset = { matTranslationByRot(0, 3),
+							matTranslationByRot(1, 3),
+							matTranslationByRot(2, 3) };
+
+		m_cameraPos = m_cameraPos + offset;
     }
 }
 

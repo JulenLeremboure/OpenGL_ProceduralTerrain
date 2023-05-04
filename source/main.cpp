@@ -9,6 +9,9 @@
 #include "Utility/Maths.h"
 #include "ProceduralGeneration/HeightMap/HeightMap.h"
 
+#include "glm/glm.hpp"  
+#include "glm/gtc/matrix_transform.hpp"
+
 constexpr float WINDOW_BASE_WIDTH = 800.f;
 constexpr float WINDOW_BASE_HEIGHT = 600.f;
 
@@ -62,8 +65,9 @@ int main()
             {
                 heightMap.load(10);
             }
-            camera.moveCameraForInput(sfmlEvent, deltaTime);
+
             camera.rotateCameraForInput(sfmlEvent, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
+            camera.moveCameraForInput(sfmlEvent, deltaTime);
         }
 
         // ---- DRAWINGS
@@ -74,6 +78,7 @@ int main()
         Mat4<float> matView = Mat4<float>::rotationX(-camera.m_cameraBeta) * 
 						Mat4<float>::rotationY(-camera.m_cameraAlpha) *
 						Mat4<float>::translation(-camera.m_cameraPos.x, -camera.m_cameraPos.y, -camera.m_cameraPos.z);
+
         const auto matProj = Mat4<float>::projection(WINDOW_ASPECT_RATIO, CAMERA_FOV, CAMERA_FAR_PLANE, CAMERA_NEAR_PLANE);
         Mat4<float> matViewByProj = matProj * matView;
 
