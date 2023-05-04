@@ -8,6 +8,7 @@
       "version>=" : "2.5.1#14"
     },
     "imgui",
-    "glew"
+    "glew",
+    "glm"
   ]
 }

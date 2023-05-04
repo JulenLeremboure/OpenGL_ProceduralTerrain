@@ -22,7 +22,18 @@
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "variables": []
+      "variables": [
+        {
+          "name": "GLM_DIR",
+          "value": "D:/Ynov/OpenGL_ProceduralTerrain/out/build/x64-Release/vcpkg_installed/x64-windows/share/glm",
+          "type": "PATH"
+        },
+        {
+          "name": "glm_DIR",
+          "value": "D:/Ynov/OpenGL_ProceduralTerrain/out/build/x64-Release/vcpkg_installed/x64-windows/share/glm",
+          "type": "PATH"
+        }
+      ]
     }
   ]
 }

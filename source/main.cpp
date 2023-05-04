@@ -45,7 +45,8 @@ int main()
         sf::Event sfmlEvent;
         while (window.pollEvent(sfmlEvent))
         {
-            if (sfmlEvent.type == sf::Event::Closed)
+            if (sfmlEvent.type == sf::Event::Closed
+             || sfmlEvent.type == sf::Event::KeyPressed && sfmlEvent.key.code == sf::Keyboard::Escape)
             {
                 isProgramRunning = false;
             }
@@ -57,7 +58,10 @@ int main()
             {
                 sf::Mouse::setPosition(sf::Vector2i(WINDOW_BASE_WIDTH / 2.f, WINDOW_BASE_HEIGHT / 2.f), window);
             }
-
+            else if (sfmlEvent.type == sf::Event::KeyPressed && sfmlEvent.key.code == sf::Keyboard::A)
+            {
+                heightMap.load(10);
+            }
             camera.moveCameraForInput(sfmlEvent, deltaTime);
             camera.rotateCameraForInput(sfmlEvent, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
         }
@@ -80,7 +84,7 @@ int main()
         window.display();
     }
 
-    // libération des ressources...
+    // libï¿½ration des ressources...
 
     return 0;
 }

@@ -1,12 +1,12 @@
 #pragma once
 
 #include <vector>
-
+#include "../../Noise/Noise.h"
 #include "../../Utility/Color.h"
 #include "gl/glew.h"
 
-constexpr int MAP_HEIGHT = 100;
-constexpr int MAP_WIDTH = 100;
+constexpr int MAP_HEIGHT = 1000;
+constexpr int MAP_WIDTH = 1000;
 
 constexpr int MIN_VERTEX_HEIGHT = 0;
 constexpr int MAX_VERTEX_HEIGHT = 20;
@@ -19,8 +19,10 @@ public:
 	HeightMap();
 	~HeightMap();
 
-	void load();
+	void load(const int seed);
 	void render(const Mat4<float> viewProjection);
+	double noise(double x, double y);
+	double multipleNoise(double x, double y, double t);
 
 private:
 	static Color<float> getColorFromVertexHeight(float vertexHeight);
@@ -29,6 +31,9 @@ private:
 	GLuint m_vbo{ 0 };
 	GLuint m_ebo{ 0 };
 	GLuint m_program{ 0 };
+
+	// Create and configure FastNoise object
+	FastNoiseLite noiseGen;
 
 	std::vector<vertex_colored> m_points;
 };

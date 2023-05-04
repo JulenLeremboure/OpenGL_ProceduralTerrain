@@ -3,15 +3,15 @@
 #include "SFML/Window/Event.hpp"
 #include "../../Utility/Maths.h"
 
-constexpr float CAMERA_FOV = 45.0f / 180.0f * PI;
+constexpr float CAMERA_FOV = 80.0f / 180.0f * PI;
 constexpr float CAMERA_NEAR_PLANE = 0.1f;
 constexpr float CAMERA_FAR_PLANE = 1000.0f;
-constexpr float CAMERA_SPEED = 60.f;
+constexpr float CAMERA_SPEED = 300.f;
 
 class Camera
 {
 public:
-    Camera(const Point3Df& initialPos = Point3Df()) :
+    Camera(const Point3Df& initialPos = Point3Df(0.f, 200.f, 0.f)) :
 		m_cameraPos(initialPos)
 	{ }
 
