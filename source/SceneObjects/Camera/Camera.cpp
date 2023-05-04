@@ -10,46 +10,27 @@ void Camera::moveCameraForInput(const sf::Event& inputEvent, float deltaTime)
 {
     if (inputEvent.type == sf::Event::KeyPressed)
     {
-		Point3Df offsetVecResult{0.f, 0.f, 0.f};
+		glm::vec3 offsetVecResult{0.f, 0.f, 0.f};
 
-        switch (inputEvent.key.code)
-        {
-	        case sf::Keyboard::Z:
-				offsetVecResult.z -= 1.0f;
-	            break;
-	        case sf::Keyboard::S:
-				offsetVecResult.z += 1.0f;
-	            break;
-	        case sf::Keyboard::Q:
-				offsetVecResult.x -= 1.0f;
-	            break;
-	        case sf::Keyboard::D:
-				offsetVecResult.x += 1.0f;
-	            break;
-	        case sf::Keyboard::Space:
-				offsetVecResult.y += 1.0f;
-	            break;
-	        case sf::Keyboard::LControl:
-				offsetVecResult.y -= 1.0f;
-	            break;
-        }
+        if(inputEvent.key.code == sf::Keyboard::Z)
+	        offsetVecResult += m_cameraFront;
 
-		//if (offsetVecResult == Point3Df(0.f, 0.f, 0.f))
-		//	return;
+		if(inputEvent.key.code == sf::Keyboard::S)
+		    offsetVecResult -= m_cameraFront;
 
-		//m_cameraMovement =  offsetVecResult * CAMERA_SPEED * deltaTime;
+		if(inputEvent.key.code == sf::Keyboard::Q)
+			offsetVecResult -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp));
 
-		Mat4<float> matTranslationByRot = Mat4<float>::rotationX(-m_cameraBeta) *
-							 Mat4<float>::rotationY(-m_cameraAlpha) * 
-							Mat4<float>::translation(offsetVecResult * CAMERA_SPEED * deltaTime);
+    	if(inputEvent.key.code == sf::Keyboard::D)
+            offsetVecResult += glm::normalize(glm::cross(m_cameraFront, m_cameraUp));
 
-		std::cout << "x: " << m_cameraBeta << " | y: " << m_cameraAlpha << std::endl;
+    	if(inputEvent.key.code == sf::Keyboard::Space)
+            offsetVecResult.y += 1.0f;
 
-		Point3Df offset = { matTranslationByRot(0, 3),
-							matTranslationByRot(1, 3),
-							matTranslationByRot(2, 3) };
+    	if(inputEvent.key.code == sf::Keyboard::LControl)
+			offsetVecResult.y -= 1.0f;
 
-		m_cameraPos = m_cameraPos + offset;
+		m_cameraPos += offsetVecResult * CAMERA_SPEED * deltaTime;
     }
 }
 
@@ -57,7 +38,21 @@ void Camera::rotateCameraForInput(const sf::Event& inputEvent, float windowWidth
 {
     if (inputEvent.type == sf::Event::MouseMoved)
     {
-        m_cameraAlpha += (inputEvent.mouseMove.x - windowWidth / 2.f) * -0.001f;
-        m_cameraBeta += (inputEvent.mouseMove.y - windowHeight / 2.f) * 0.001f;
+        const float xPos = (inputEvent.mouseMove.x - windowWidth / 2.f);
+        const float yPos = -(inputEvent.mouseMove.y - windowHeight / 2.f);
+
+        m_yaw += xPos * CAMERA_SENSITIVITY;
+        m_pitch += yPos * CAMERA_SENSITIVITY;
+
+        if (m_pitch > 89.0f)
+            m_pitch = 89.0f;
+        if (m_pitch < -89.0f)
+            m_pitch = -89.0f;
+
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+        direction.y = sin(glm::radians(m_pitch));
+        direction.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+        m_cameraFront = glm::normalize(direction);
     }
 }

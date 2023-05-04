@@ -66,8 +66,8 @@ int main()
                 heightMap.load(10);
             }
 
-            camera.rotateCameraForInput(sfmlEvent, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
             camera.moveCameraForInput(sfmlEvent, deltaTime);
+            camera.rotateCameraForInput(sfmlEvent, WINDOW_BASE_WIDTH, WINDOW_BASE_HEIGHT);
         }
 
         // ---- DRAWINGS
@@ -75,12 +75,10 @@ int main()
         // effacement les tampons de couleur/profondeur
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Mat4<float> matView = Mat4<float>::rotationX(-camera.m_cameraBeta) * 
-						Mat4<float>::rotationY(-camera.m_cameraAlpha) *
-						Mat4<float>::translation(-camera.m_cameraPos.x, -camera.m_cameraPos.y, -camera.m_cameraPos.z);
+        const auto matView = glm::lookAt(camera.m_cameraPos, camera.m_cameraPos + camera.m_cameraFront, camera.m_cameraUp);
 
-        const auto matProj = Mat4<float>::projection(WINDOW_ASPECT_RATIO, CAMERA_FOV, CAMERA_FAR_PLANE, CAMERA_NEAR_PLANE);
-        Mat4<float> matViewByProj = matProj * matView;
+        const auto matProj = glm::perspective(CAMERA_FOV, WINDOW_ASPECT_RATIO, CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE);
+        const auto matViewByProj = matProj * matView;
 
         heightMap.render(matViewByProj);
 
