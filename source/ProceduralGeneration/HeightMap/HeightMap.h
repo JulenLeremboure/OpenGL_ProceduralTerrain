@@ -20,7 +20,7 @@ public:
 	~HeightMap();
 
 	void load(const int seed);
-	void render(const Mat4<float> viewProjection);
+	void render(const glm::mat<4, 4, float>& viewProjection);
 	double noise(double x, double y);
 	double multipleNoise(double x, double y, double t);
 

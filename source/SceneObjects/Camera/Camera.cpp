@@ -1,30 +1,36 @@
 #include "Camera.h"
 
+#include <iostream>
+
+#include "glm/glm.hpp"  
+#include "glm/gtc/matrix_transform.hpp"
+
+
 void Camera::moveCameraForInput(const sf::Event& inputEvent, float deltaTime)
 {
     if (inputEvent.type == sf::Event::KeyPressed)
     {
-        switch (inputEvent.key.code)
-        {
-	        case sf::Keyboard::Z:
-	            m_cameraPos.z -= CAMERA_SPEED * deltaTime;
-	            break;
-	        case sf::Keyboard::S:
-	            m_cameraPos.z += CAMERA_SPEED * deltaTime;
-	            break;
-	        case sf::Keyboard::Q:
-	            m_cameraPos.x -= CAMERA_SPEED * deltaTime;
-	            break;
-	        case sf::Keyboard::D:
-	            m_cameraPos.x += CAMERA_SPEED * deltaTime;
-	            break;
-	        case sf::Keyboard::Space:
-	            m_cameraPos.y += CAMERA_SPEED * deltaTime;
-	            break;
-	        case sf::Keyboard::LControl: // TODO : Understand why LShift or LControl doesn't work
-	            m_cameraPos.y -= CAMERA_SPEED * deltaTime;
-	            break;
-        }
+		glm::vec3 offsetVecResult{0.f, 0.f, 0.f};
+
+        if(inputEvent.key.code == sf::Keyboard::Z)
+	        offsetVecResult += m_cameraFront;
+
+		if(inputEvent.key.code == sf::Keyboard::S)
+		    offsetVecResult -= m_cameraFront;
+
+		if(inputEvent.key.code == sf::Keyboard::Q)
+			offsetVecResult -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp));
+
+    	if(inputEvent.key.code == sf::Keyboard::D)
+            offsetVecResult += glm::normalize(glm::cross(m_cameraFront, m_cameraUp));
+
+    	if(inputEvent.key.code == sf::Keyboard::Space)
+            offsetVecResult.y += 1.0f;
+
+    	if(inputEvent.key.code == sf::Keyboard::LControl)
+			offsetVecResult.y -= 1.0f;
+
+		m_cameraPos += offsetVecResult * CAMERA_SPEED * deltaTime;
     }
 }
 
@@ -32,7 +38,21 @@ void Camera::rotateCameraForInput(const sf::Event& inputEvent, float windowWidth
 {
     if (inputEvent.type == sf::Event::MouseMoved)
     {
-        m_cameraAlpha += (inputEvent.mouseMove.x - windowWidth / 2.f) * -0.001f;
-        m_cameraBeta += (inputEvent.mouseMove.y - windowHeight / 2.f) * 0.001f;
+        const float xPos = (inputEvent.mouseMove.x - windowWidth / 2.f);
+        const float yPos = -(inputEvent.mouseMove.y - windowHeight / 2.f);
+
+        m_yaw += xPos * CAMERA_SENSITIVITY;
+        m_pitch += yPos * CAMERA_SENSITIVITY;
+
+        if (m_pitch > 89.0f)
+            m_pitch = 89.0f;
+        if (m_pitch < -89.0f)
+            m_pitch = -89.0f;
+
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+        direction.y = sin(glm::radians(m_pitch));
+        direction.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+        m_cameraFront = glm::normalize(direction);
     }
 }

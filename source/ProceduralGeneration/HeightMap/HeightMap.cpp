@@ -1,6 +1,9 @@
 #include "HeightMap.h"
 
 #include "../../Rendering/Shader.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 
 HeightMap::HeightMap()
 {
@@ -122,7 +125,7 @@ void HeightMap::load(const int seed)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void HeightMap::render(const Mat4<float> viewProjection)
+void HeightMap::render(const glm::mat<4, 4, float>& viewProjection)
 {
 	constexpr int NUM_STRIPS = MAP_HEIGHT - 1;
 	constexpr int NUM_VERTS_PER_STRIP = MAP_WIDTH * 2;
@@ -142,7 +145,8 @@ void HeightMap::render(const Mat4<float> viewProjection)
 	}
 
 	const auto mvpLocation = glGetUniformLocation(m_program, "model");
-	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, viewProjection.data());
+
+	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &viewProjection[0][0]);
 }
 
 Color<float> HeightMap::getColorFromVertexHeight(float vertexHeight)
