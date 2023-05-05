@@ -25,7 +25,7 @@ add_custom_command(TARGET ${EXECUTABLE_TARGET_NAME} PRE_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${CMAKE_SOURCE_DIR}/source/Resources/ $<TARGET_FILE_DIR:${EXECUTABLE_TARGET_NAME}>/Resources)
 
-target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE glfw)
-target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE GLEW::GLEW)
-target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE imgui::imgui)
-target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE glm::glm)
+target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE glfw
+PRIVATE GLEW::GLEW
+PRIVATE imgui::imgui
+PRIVATE glm::glm)

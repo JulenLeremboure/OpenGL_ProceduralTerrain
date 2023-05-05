@@ -4,12 +4,10 @@
 #include "../../Noise/Noise.h"
 #include "../../Utility/Color.h"
 #include "gl/glew.h"
+#include "../../SceneObjects/Camera/Camera.h"
 
 constexpr int MAP_HEIGHT = 1000;
 constexpr int MAP_WIDTH = 1000;
-
-constexpr int MIN_VERTEX_HEIGHT = 0;
-constexpr int MAX_VERTEX_HEIGHT = 20;
 
 class HeightMap
 {
@@ -19,13 +17,25 @@ public:
 	HeightMap();
 	~HeightMap();
 
-	void load(const int seed);
-	void render(const glm::mat<4, 4, float>& viewProjection);
+	void load();
+	void clear();
+	void render(Camera& camera, const float aspect_ratio);
 	double noise(double x, double y);
-	double multipleNoise(double x, double y, double t);
+	double multipleNoise(double x, double y, double f);
+
+	// todo make a struct noise_params
+	int m_seed;
+	float m_frequency;
+	float m_pow;
+	int m_octaves;
+	float m_lacunarity;
+	float m_gain;
+	FastNoiseLite::NoiseType m_noiseType;
+	FastNoiseLite::FractalType m_fractalType;
+	FastNoiseLite::CellularDistanceFunction m_cellularDistanceFunction;
 
 private:
-	static Color<float> getColorFromVertexHeight(float vertexHeight);
+	static Color<float> getColorFromVertexHeight(float elevation);
 
 	GLuint m_vao { 0 };
 	GLuint m_vbo{ 0 };
@@ -33,7 +43,17 @@ private:
 	GLuint m_program{ 0 };
 
 	// Create and configure FastNoise object
-	FastNoiseLite noiseGen;
+	FastNoiseLite m_noiseGen;
+	
+	/*float mFractalBounding;*/
+	/*CellularDistanceFunction mCellularDistanceFunction;
+	CellularReturnType mCellularReturnType;
+	float mCellularJitterModifier;*/
+
+	/*DomainWarpType mDomainWarpType;
+	TransformType3D mWarpTransformType3D;
+	float mDomainWarpAmp;*/
+	
 
 	std::vector<vertex_colored> m_points;
 };

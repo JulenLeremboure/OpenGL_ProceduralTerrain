@@ -47,3 +47,21 @@ namespace GameColors
 	inline ColorF snow          { ColorF(236, 242, 255).convertRGBto01() };
 	inline ColorF ice           { ColorF(165, 215, 232).convertRGBto01() };
 }
+
+namespace BiomeColors
+{
+    inline ColorF ocean{ ColorF(10, 77, 104).convertRGBto01() };
+    inline ColorF beach{ ColorF(235, 216, 178).convertRGBto01() };
+    inline ColorF scorch{ ColorF(255, 123, 84).convertRGBto01() };
+    inline ColorF bare{ ColorF(156, 167, 119).convertRGBto01() };
+    inline ColorF tundra{ ColorF(169, 175, 126).convertRGBto01() };
+    inline ColorF snow{ ColorF(236, 242, 255).convertRGBto01() };
+    inline ColorF temparatedDesert{ ColorF(254, 168, 47).convertRGBto01() };
+    inline ColorF shrubland{ ColorF(164, 190, 123).convertRGBto01() };
+    inline ColorF taiga{ ColorF(40, 84, 48).convertRGBto01() };
+    inline ColorF grassland{ ColorF(95, 141, 78).convertRGBto01() };
+    inline ColorF temparatedDeciduousForest{ ColorF(231, 177, 10).convertRGBto01() };
+    inline ColorF temparatedRainForest{ ColorF(43, 122, 11).convertRGBto01() };
+    inline ColorF subtropicalDesert{ ColorF(250, 214, 165).convertRGBto01() };
+    inline ColorF tropicalSeasonalDesert{ ColorF(155, 161, 123).convertRGBto01() };
+}
