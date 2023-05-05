@@ -30,3 +30,5 @@ Then, install those dependencies :
 - Next to the Play mode icon, change the build target into the generated .exe.
 
 - Enjoie.
+
+If an error occurs concerning your CMake version, maybe your CMake has not been detected. Into CMakeSettings.txt, check for the "cmakeexecutable" path.

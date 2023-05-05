@@ -66,11 +66,6 @@ int main()
     Camera camera(glWindow, glm::vec3(0.f, 150.f, 0.f));
     HeightMap heightMap;
 
-    // for fps
-    int mFrame = 0;
-    int mFps = 0;
-    
-
     float lastFrame = 0; // Time of last frame
 
     // ---- INIT IMGUI
@@ -110,7 +105,7 @@ int main()
     };
     int cellularDistanceType = 1;
 
-    bool q_key_pressed = false; // variable pour suivre l'état de la touche "Q"
+    bool isGKeyPressed = false; // variable pour suivre l'état de la touche "Q"
 
 
     // ---- GAME LOOP
@@ -139,7 +134,7 @@ int main()
         // vérifie si la touche "Q" est enfoncée
         if (glfwGetKey(glWindow, GLFW_KEY_Q) == GLFW_PRESS)
         {
-            if (!q_key_pressed) // si la touche "Q" vient d'être enfoncée
+            if (!isGKeyPressed) // si la touche "Q" vient d'être enfoncée
             {
                 if (camera.m_rotationIsActive)
                     glfwSetInputMode(glWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -147,11 +142,11 @@ int main()
                     glfwSetInputMode(glWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
                 camera.m_rotationIsActive = !camera.m_rotationIsActive;
             }
-            q_key_pressed = true; // indique que la touche "Q" est actuellement enfoncée
+            isGKeyPressed = true; // indique que la touche "Q" est actuellement enfoncée
         }
         else
         {
-            q_key_pressed = false; // indique que la touche "Q" est relâchée
+            isGKeyPressed = false; // indique que la touche "Q" est relâchée
         }
 
         camera.moveCameraForInput(glWindow, deltaTime);
