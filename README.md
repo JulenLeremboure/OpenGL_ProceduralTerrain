@@ -8,17 +8,12 @@ Make sure to get the latest version of CMake. The project works with 3.24 and ab
 
 Get vcpkg from here : https://vcpkg.io/en/getting-started.html
 
-And don't forget to run those commands (Windows) :
+Or run those commands, preferably at the root of your user folder (Windows) :
 
 ```bash
-.\vcpkg\bootstrap-vcpkg.bat
-vcpkg integrate install
-```
-
-Then, install those dependencies :
-
-```bash
-.\vcpkg\vcpkg.exe install --triplet x64-windows
+git clone https://github.com/Microsoft/vcpkg.git
+./vcpkg/bootstrap-vcpkg.bat
+./vcpkg/vcpkg.exe integrate install
 ```
 
 #### Visual Studio
