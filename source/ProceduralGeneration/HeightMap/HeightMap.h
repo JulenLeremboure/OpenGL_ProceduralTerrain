@@ -21,16 +21,18 @@ public:
 	void clear();
 	void render(Camera& camera, const float aspect_ratio);
 	double noise(double x, double y);
-	double noise(FastNoiseLite noiseGen, double x, double y);
-	void test();
+	double multipleNoise(double x, double y, double f);
 
 	// todo make a struct noise_params
 	int m_seed;
 	float m_frequency;
+	float m_pow;
 	int m_octaves;
 	float m_lacunarity;
 	float m_gain;
 	FastNoiseLite::NoiseType m_noiseType;
+	FastNoiseLite::FractalType m_fractalType;
+	FastNoiseLite::CellularDistanceFunction m_cellularDistanceFunction;
 
 private:
 	static Color<float> getColorFromVertexHeight(float elevation);

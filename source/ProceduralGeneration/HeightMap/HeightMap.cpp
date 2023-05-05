@@ -5,12 +5,11 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 
-HeightMap::HeightMap() : m_seed(10), m_octaves(3), m_frequency(0.01f), m_lacunarity(2.0f), m_gain(0.5f)
+HeightMap::HeightMap() : m_seed(10), m_octaves(3), m_frequency(0.01f), m_lacunarity(2.0f), 
+						m_gain(0.5f), m_noiseType(FastNoiseLite::NoiseType_OpenSimplex2S),
+						m_fractalType(FastNoiseLite::FractalType_DomainWarpIndependent), m_cellularDistanceFunction(FastNoiseLite::CellularDistanceFunction_EuclideanSq),
+						m_pow(1.f)
 {
-	m_noiseGen.SetFractalOctaves(10);
-	m_noiseGen.SetFractalGain(0.5f);
-	m_noiseGen.SetSeed(2);
-	m_noiseGen.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	load();
 }
 
@@ -22,13 +21,23 @@ HeightMap::~HeightMap()
 
 double HeightMap::noise(double x, double y) { 
 	// Rescale from -1.0:+1.0 to 0.0:1.0
-	return m_noiseGen.GetNoise(x, y) / 2.0 + 0.5;
+	return std::pow(m_noiseGen.GetNoise(x, y) / 2.0 + 0.5, m_pow);
 }
 
-//double HeightMap::noise(FastNoiseLite noiseGen, double x, double y) {
-//	// Rescale from -1.0:+1.0 to 0.0:1.0
-//	return noiseGen.GetNoise(x, y) / 2.0 + 0.5;
-//}
+double HeightMap::multipleNoise(double x, double y, double f) {
+	// Rescale from -1.0:+1.0 to 0.0:1.0
+	double coeff = 0.;
+	float vertexHeight = 0.f;
+	while (f > 0)
+	{
+		FastNoiseLite noiseGen;
+		vertexHeight += 1 / f * noise(f * x, f * y);
+		coeff += 1 / f;
+		f--;
+	}
+
+	return vertexHeight / coeff;
+}
 
 
 void HeightMap::clear()
@@ -48,16 +57,21 @@ void HeightMap::clear()
 	m_program = 0;
 }
 
+
 void HeightMap::load()
 {
 	constexpr float MAP_POS_Y_OFFSET = 50;
 
-	//m_noiseGen.SetFractalOctaves(m_octaves);
-	/*m_noiseGen.SetFractalGain(m_gain);
+	// todo move to a function
+	m_noiseGen.SetFractalType(m_fractalType);
+	m_noiseGen.SetFractalWeightedStrength(0.5f);
+	m_noiseGen.SetFractalOctaves(m_octaves);
+	m_noiseGen.SetFractalGain(m_gain);
 	m_noiseGen.SetFrequency(m_frequency);
 	m_noiseGen.SetFractalLacunarity(m_lacunarity);
 	m_noiseGen.SetSeed(m_seed);
-	m_noiseGen.SetNoiseType(FastNoiseLite::NoiseType_Perlin);*/
+	m_noiseGen.SetNoiseType(m_noiseType);
+	m_noiseGen.SetCellularDistanceFunction(m_cellularDistanceFunction);
 	
 	for (double y = 0; y < MAP_HEIGHT; y++)
 	{
